@@ -25,7 +25,7 @@ public class Screening {
     private LocalDateTime startTime;
 
     @Column(nullable = false)
-    private LocalDateTime endTime;
+    private int duration;
 
     @Column(nullable = false)
     private String hallName;
