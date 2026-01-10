@@ -47,4 +47,7 @@ public class Movie {
             inverseJoinColumns = @JoinColumn(name = "director_id")
     )
     private String director;
+
+    @Column(length = 500)
+    private String posterUrl;
 }

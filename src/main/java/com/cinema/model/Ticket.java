@@ -34,4 +34,7 @@ public class Ticket {
 
     @Column(nullable = false)
     private double price;
+
+    @Enumerated(EnumType.STRING)
+    private TicketStatus status = TicketStatus.RESERVED;
 }
