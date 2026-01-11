@@ -37,4 +37,7 @@ public class Ticket {
 
     @Enumerated(EnumType.STRING)
     private TicketStatus status = TicketStatus.RESERVED;
+
+    private LocalDateTime reservedAt = LocalDateTime.now();
+    private LocalDateTime purchaseDate;
 }
