@@ -38,4 +38,13 @@ public class TicketCleanupService {
             }
         }
     }
+
+    @Scheduled(cron = "0 0 * * * *") //every hour
+    public void deleteExpiredTickets() {
+        List<Ticket> expiredTickets = ticketRepository.findByStatus(TicketStatus.EXPIRED);
+        if(!expiredTickets.isEmpty()) {
+            ticketRepository.deleteAllByStatus(TicketStatus.EXPIRED);
+            System.out.println("Deleted " + expiredTickets.size() + " expired tickets");
+        }
+    }
 }
