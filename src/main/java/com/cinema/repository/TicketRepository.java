@@ -14,4 +14,6 @@ public interface TicketRepository  extends JpaRepository<Ticket, Long> {
     List<Ticket> findByStatus(TicketStatus status);
 
     void deleteAllByStatus(TicketStatus status);
+
+    List<Ticket> findByUserAndStatus(User user, TicketStatus ticketStatus);
 }

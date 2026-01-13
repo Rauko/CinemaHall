@@ -1,24 +1,33 @@
 package com.cinema.controller;
 
 import com.cinema.model.User;
-import com.cinema.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
+import com.cinema.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/user")
-@RequiredArgsConstructor
 public class UserController {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping("/me")
-    public ResponseEntity<?> getMyProfile(Authentication authentication) {
-        String email = authentication.getName();
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        return ResponseEntity.ok(user);
+    public ResponseEntity<User> getMyProfile() {
+        return ResponseEntity.ok(userService.getCurrentUser());
+    }
+
+    @PatchMapping("/me/name")
+    public ResponseEntity<User> updateName(@RequestBody String name) {
+        return ResponseEntity.ok(userService.updateName(name));
+    }
+
+    @PatchMapping("/me/password")
+    public ResponseEntity<User> updatePassword(@RequestBody String password) {
+        return ResponseEntity.ok(userService.updatePassword(password));
     }
 }
