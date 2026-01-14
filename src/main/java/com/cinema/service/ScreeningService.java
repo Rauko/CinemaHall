@@ -29,7 +29,11 @@ public class ScreeningService {
         return screeningRepository.findByMovie(movie);
     }
 
-    public Screening addScreening(Long movieId, String hallName, LocalDateTime startTime, int duration, double price) {
+    public Screening addScreening(Long movieId,
+                                  String hallName,
+                                  LocalDateTime startTime,
+                                  int duration,
+                                  double price) {
         Movie movie = movieRepository.findById(movieId)
                 .orElseThrow(() -> new RuntimeException("Movie not found"));
 
