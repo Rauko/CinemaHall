@@ -24,4 +24,8 @@ public class TicketService {
     public List<Ticket> getPaidTicketsByUser(User user){
         return ticketRepository.findByUserAndStatus(user, TicketStatus.PAID);
     }
+
+    public List<Ticket> getTicketsByUserAndStatus(User user, TicketStatus status){
+        return ticketRepository.findByUserAndStatus(user, status);
+    }
 }

@@ -1,6 +1,7 @@
 package com.cinema.config;
 
 import com.cinema.model.User;
+import com.cinema.model.UserStatus;
 import com.cinema.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -24,6 +25,14 @@ public class CustomUserDetailsService implements UserDetailsService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() ->new UsernameNotFoundException("User not found. Email "
                         + email + " don't exist in system."));
+
+        if (user.getStatus() == UserStatus.BANNED) {
+            throw new RuntimeException("User is banned.");
+        }
+        if (user.getStatus() == UserStatus.SUSPENDED) {
+            throw new RuntimeException("User is suspended.");
+        }
+
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),
                 user.getPasswordHash(),

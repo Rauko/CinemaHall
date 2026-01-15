@@ -27,11 +27,16 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private UserStatus status;
+
     public User(String name, String email, String passwordHash, Role role) {
         this.name = name;
         this.email = email;
         this.passwordHash = passwordHash;
         this.role = role;
+        this.status = UserStatus.ACTIVE;
     }
 
     public User(String name, String email, String passwordHash) {
@@ -39,6 +44,7 @@ public class User {
         this.email = email;
         this.passwordHash = passwordHash;
         this.role = Role.USER;
+        this.status = UserStatus.ACTIVE;
     }
 
     public Long getId(){
@@ -57,6 +63,10 @@ public class User {
         return email;
     }
 
+    public UserStatus getStatus(){
+        return status;
+    }
+
     public void setEmail(String email){
         this.email = email;
     }
@@ -73,5 +83,9 @@ public class User {
     }
     public void setRole(Role role){
         this.role = role;
+    }
+
+    public void setStatus(UserStatus status){
+        this.status = status;
     }
 }

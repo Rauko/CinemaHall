@@ -31,8 +31,9 @@ public class SecurityConfig {
                                                                                 in Spring Security */
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()          //registration and login allowed for all
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")    //admin only access
+                        .requestMatchers("/api/admin/**").hasAnyRole("ADMIN", "SUPER_ADMIN")    //admin only access
                         .requestMatchers("/api/user/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/api/superadmin/**").hasRole("SUPER_ADMIN")
                         .anyRequest().authenticated()                                  //the rest needs auth
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(
