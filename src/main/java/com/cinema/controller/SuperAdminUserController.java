@@ -48,9 +48,10 @@ public class SuperAdminUserController {
 
     @DeleteMapping("/delete-banned-user")
     public ResponseEntity<String> deleteBannedUser(Long id) {
-        if(userRepository.getById(id).getStatus() == UserStatus.BANNED) {
-            userRepository.deleteUser(id);
+        if(userRepository.getById(id).getStatus() != UserStatus.BANNED) {
+            throw new RuntimeException("User is not banned.");
         }
+        userRepository.deleteUser(id);
         return ResponseEntity.ok("Banned user " + id + " deleted.");
     }
 
