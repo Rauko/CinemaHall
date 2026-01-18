@@ -33,7 +33,7 @@ public class Screening {
     @Column(nullable = false)
     private double basePrice;
 
-    @ManyToOne
-    @JoinColumn(name = "hall_id")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "hall_id", nullable = false)
     private Hall hall;
 }

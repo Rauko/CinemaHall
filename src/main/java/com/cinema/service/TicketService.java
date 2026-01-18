@@ -1,20 +1,31 @@
 package com.cinema.service;
 
-import com.cinema.model.Ticket;
-import com.cinema.model.TicketStatus;
-import com.cinema.model.User;
+import com.cinema.model.*;
+import com.cinema.repository.ScreeningRepository;
+import com.cinema.repository.SeatRepository;
 import com.cinema.repository.TicketRepository;
+import com.cinema.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 public class TicketService {
 
     private final TicketRepository ticketRepository;
+    private final UserRepository userRepository;
+    private final SeatRepository seatRepository;
+    private final ScreeningRepository screeningRepository;
 
-    public TicketService(TicketRepository ticketRepository) {
+    public TicketService(TicketRepository ticketRepository,
+                         UserRepository userRepository,
+                         ScreeningRepository screeningRepository,
+                         SeatRepository seatRepository) {
         this.ticketRepository = ticketRepository;
+        this.userRepository = userRepository;
+        this.screeningRepository = screeningRepository;
+        this.seatRepository = seatRepository;
     }
 
     public List<Ticket> getTicketsByUser(User user){
@@ -27,5 +38,38 @@ public class TicketService {
 
     public List<Ticket> getTicketsByUserAndStatus(User user, TicketStatus status){
         return ticketRepository.findByUserAndStatus(user, status);
+    }
+
+    public Ticket createTicket(Long userId, Long screeningId, Long seatId){
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Screening screening = screeningRepository.findById(screeningId)
+                .orElseThrow(() -> new RuntimeException("Screening not found"));
+        Seat seat = seatRepository.findById(seatId)
+                .orElseThrow(() -> new RuntimeException("Seat not found"));
+
+        if (!seat.getHall().getId().equals(screening.getHall().getId())) {
+            throw new RuntimeException("Seat does not belong to screening hall");
+        }
+
+        if (ticketRepository.existsByScreeningIdAndSeatId(screeningId, seatId)) {
+            throw new RuntimeException("Ticket already taken");
+        }
+
+        Ticket ticket = new Ticket();
+        ticket.setUser(user);
+        ticket.setScreening(screening);
+        ticket.setSeat(seat);
+
+        double price = screening.getBasePrice();
+        if (seat.getType().equals(SeatType.VIP)) {
+            price *= 1.5;
+        }
+        ticket.setPrice(price);
+
+        ticket.setStatus(TicketStatus.RESERVED);
+        ticket.setReservedAt(java.time.LocalDateTime.now());
+
+        return ticketRepository.save(ticket);
     }
 }

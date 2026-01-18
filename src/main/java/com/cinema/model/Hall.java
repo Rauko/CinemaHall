@@ -1,10 +1,9 @@
 package com.cinema.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -24,4 +23,7 @@ public class Hall {
 
     @OneToMany(mappedBy = "hall")
     private List<Screening> screenings;
+
+    @OneToMany(mappedBy = "hall", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Seat> seats = new ArrayList<>();
 }

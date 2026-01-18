@@ -8,7 +8,10 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "tickets")
+@Table(
+        name = "tickets",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"screening_id", "seat_id"})
+)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,8 +29,9 @@ public class Ticket {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(nullable = false)
-    private String seatNumber;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "seat_id", nullable = false)
+    private Seat seat;
 
     @Column(nullable = false)
     private LocalDateTime purchaseTime;
