@@ -1,5 +1,6 @@
 package com.cinema.controller;
 
+import com.cinema.dto.MovieDto;
 import com.cinema.model.Movie;
 import com.cinema.service.MovieService;
 import org.springframework.http.ResponseEntity;
@@ -18,15 +19,19 @@ public class MovieController {
     }
 
     @GetMapping
-    public List<Movie> getAllMovies() {
-        return movieService.getAllMovies();
+    public List<MovieDto> getAllMovies() {
+        return movieService.getAllMovies()
+                .stream()
+                .map(MovieDto::fromEntity)
+                .toList();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Movie> getMovieById(@PathVariable Long id) {
-        return movieService.getMovieById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public MovieDto getMovieById(@PathVariable Long id) {
+        Movie movie = movieService.getMovieById(id)
+                .orElseThrow(() -> new RuntimeException("Movie not found"));
+
+        return MovieDto.fromEntity(movie);
     }
 
     @PostMapping
