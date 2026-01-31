@@ -23,9 +23,14 @@ public class Movie {
 
     private String description;
 
+    @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING) //guarantee that in db will be genre name, not index
-    @Column(nullable = false)
-    private MovieGenre genre;
+    @CollectionTable(
+            name = "movie_genres",
+            joinColumns = @JoinColumn(name = "movie_id")
+    )
+    @Column(name = "genre")
+    private Set<MovieGenre> genres;
 
     private int duration; //in mins
 
@@ -40,13 +45,9 @@ public class Movie {
     )
     private Set<Actor> actors = new HashSet<>();
 
-    @ManyToMany //as far as one director can be present in many movies
-    @JoinTable(
-            name = "director",
-            joinColumns = @JoinColumn(name = "movie_id"),
-            inverseJoinColumns = @JoinColumn(name = "director_id")
-    )
-    private String director;
+    @ManyToOne
+    @JoinColumn(name = "director_id")
+    private Director director;
 
     @Column(length = 500)
     private String posterUrl;

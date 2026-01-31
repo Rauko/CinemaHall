@@ -2,10 +2,12 @@ package com.cinema.service;
 
 import com.cinema.model.Actor;
 import com.cinema.repository.ActorRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class ActorService {
     private final ActorRepository actorRepository;
 

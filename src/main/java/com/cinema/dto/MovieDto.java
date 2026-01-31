@@ -3,13 +3,15 @@ package com.cinema.dto;
 import com.cinema.model.Movie;
 import com.cinema.model.MovieGenre;
 
+import java.util.Set;
+
 public record MovieDto(
         Long id,
         String title,
         String description,
         int year,
         int duration,
-        MovieGenre genres
+        Set<MovieGenre> genres
 ) {
 
     public static MovieDto fromEntity(Movie movie) {
@@ -19,7 +21,7 @@ public record MovieDto(
                 movie.getDescription(),
                 movie.getReleaseYear(),
                 movie.getDuration(),
-                movie.getGenre()
+                movie.getGenres()
         );
     }
 }

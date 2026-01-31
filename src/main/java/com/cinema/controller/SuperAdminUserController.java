@@ -51,7 +51,7 @@ public class SuperAdminUserController {
         if(userRepository.getById(id).getStatus() != UserStatus.BANNED) {
             throw new RuntimeException("User is not banned.");
         }
-        userRepository.deleteUser(id);
+        userRepository.deleteById(id);
         return ResponseEntity.ok("Banned user " + id + " deleted.");
     }
 

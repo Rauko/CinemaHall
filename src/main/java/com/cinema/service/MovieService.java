@@ -32,7 +32,7 @@ public class MovieService {
                 .map(movie -> {
                     movie.setTitle(updateMovie.getTitle());
                     movie.setDescription(updateMovie.getDescription());
-                    movie.setGenre(updateMovie.getGenre());
+                    movie.setGenres(updateMovie.getGenres());
                     movie.setDuration(updateMovie.getDuration());
                     movie.setDirector(updateMovie.getDirector());
                     movie.setReleaseYear(updateMovie.getReleaseYear());
