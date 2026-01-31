@@ -61,9 +61,15 @@ public class TicketService {
         ticket.setSeat(seat);
 
         double price = screening.getBasePrice();
+
+        if(screening.isImax()){
+            price *= 1.5;
+        }
+
         if (seat.getType().equals(SeatType.VIP)) {
             price *= 1.5;
         }
+
         ticket.setPrice(price);
 
         ticket.setStatus(TicketStatus.RESERVED);

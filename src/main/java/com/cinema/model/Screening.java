@@ -36,4 +36,6 @@ public class Screening {
     @ManyToOne(optional = false)
     @JoinColumn(name = "hall_id", nullable = false)
     private Hall hall;
+
+    private boolean imax;
 }
