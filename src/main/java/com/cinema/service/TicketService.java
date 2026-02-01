@@ -39,7 +39,10 @@ public class TicketService {
         return ticketRepository.findByUserAndStatus(user, status);
     }
 
-    public Ticket createTicket(Long userId, Long screeningId, Long seatId){
+    public Ticket createTicket(Long userId,
+                               Long screeningId,
+                               Long seatId,
+                               ImaxGlassesOption glassesOption){
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         Screening screening = screeningRepository.findById(screeningId)
@@ -64,10 +67,16 @@ public class TicketService {
 
         if(screening.isImax()){
             price *= 1.5;
+
+            if (glassesOption == ImaxGlassesOption.RENT){
+                price += 50;
+            } else if(glassesOption == ImaxGlassesOption.BUY) {
+                price += 150;
+            }
         }
 
         if (seat.getType().equals(SeatType.VIP)) {
-            price *= 1.5;
+            price += 0.5 * screening.getBasePrice();
         }
 
         ticket.setPrice(price);

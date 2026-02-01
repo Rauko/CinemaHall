@@ -1,5 +1,6 @@
-package com.cinema.dto;
+package com.cinema.dto.ticket;
 
+import com.cinema.model.ImaxGlassesOption;
 import com.cinema.model.Ticket;
 import com.cinema.model.TicketStatus;
 
@@ -22,7 +23,9 @@ public record TicketDto (
     String movieTitle,
 
     LocalDateTime reservedAt,
-    LocalDateTime purchaseDate
+    LocalDateTime purchaseDate,
+
+    ImaxGlassesOption glassOption
 ) {
     public static TicketDto fromEntity(Ticket ticket){
         return new TicketDto(
@@ -42,7 +45,9 @@ public record TicketDto (
                 ticket.getScreening().getMovie().getTitle(),
 
                 ticket.getReservedAt(),
-                ticket.getPurchaseDate()
+                ticket.getPurchaseDate(),
+
+                ticket.getGlassesOption()
         );
     }
 }

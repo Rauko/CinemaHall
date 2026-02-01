@@ -1,4 +1,4 @@
-package com.cinema.dto;
+package com.cinema.dto.movie;
 
 import com.cinema.model.Movie;
 import com.cinema.model.MovieGenre;

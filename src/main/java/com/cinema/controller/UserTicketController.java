@@ -1,13 +1,13 @@
 package com.cinema.controller;
 
+import com.cinema.dto.ticket.CreateTicketRequest;
 import com.cinema.model.Ticket;
 import com.cinema.model.User;
 import com.cinema.service.TicketService;
 import com.cinema.service.UserService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -33,5 +33,20 @@ public class UserTicketController {
     public List<Ticket> getPaidTickets(@PathVariable Long userId) {
         User user = userService.getUserById(userId);
         return ticketService.getPaidTicketsByUser(user);
+    }
+
+    public ResponseEntity<Ticket> createTicket(@RequestBody CreateTicketRequest request,
+                                               Authentication authentication) {
+
+        User user = (User) authentication.getPrincipal();
+
+        Ticket ticket = ticketService.createTicket(
+                user.getId(),
+                request.getScreeningId(),
+                request.getSeatId(),
+                request.getGlassesOption()
+        );
+
+        return ResponseEntity.ok(ticket);
     }
 }

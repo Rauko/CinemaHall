@@ -1,6 +1,6 @@
 package com.cinema.controller;
 
-import com.cinema.dto.TicketDto;
+import com.cinema.dto.ticket.TicketDto;
 import com.cinema.model.Ticket;
 import com.cinema.model.TicketStatus;
 import com.cinema.model.User;

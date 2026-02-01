@@ -1,6 +1,6 @@
 package com.cinema.controller;
 
-import com.cinema.dto.MovieDto;
+import com.cinema.dto.movie.MovieDto;
 import com.cinema.model.Movie;
 import com.cinema.service.MovieService;
 import org.springframework.http.ResponseEntity;

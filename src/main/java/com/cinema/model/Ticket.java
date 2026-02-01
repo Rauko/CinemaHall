@@ -44,4 +44,7 @@ public class Ticket {
 
     private LocalDateTime reservedAt = LocalDateTime.now();
     private LocalDateTime purchaseDate;
+
+    @Enumerated(EnumType.STRING)
+    private ImaxGlassesOption glassesOption = ImaxGlassesOption.NONE;
 }
