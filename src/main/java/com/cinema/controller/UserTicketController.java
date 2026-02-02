@@ -35,6 +35,7 @@ public class UserTicketController {
         return ticketService.getPaidTicketsByUser(user);
     }
 
+    @PostMapping
     public ResponseEntity<Ticket> createTicket(@RequestBody CreateTicketRequest request,
                                                Authentication authentication) {
 
@@ -48,5 +49,13 @@ public class UserTicketController {
         );
 
         return ResponseEntity.ok(ticket);
+    }
+
+    @PostMapping("/{ticketId}/cancel")
+    public ResponseEntity<Ticket> cancelTicket(
+            @PathVariable Long ticketId,
+            @RequestParam Long userId
+    ) {
+        return ResponseEntity.ok(ticketService.cancelReservation(ticketId, userId));
     }
 }

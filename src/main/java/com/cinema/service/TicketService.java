@@ -86,4 +86,22 @@ public class TicketService {
 
         return ticketRepository.save(ticket);
     }
+
+    public Ticket cancelReservation(Long ticketId, Long userId){
+
+        Ticket ticket = ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new RuntimeException("Ticket not found"));
+
+        if (!ticket.getUser().getId().equals(userId)) {
+            throw new RuntimeException("You can cancel only your own reservation");
+        }
+
+        if (ticket.getStatus() != TicketStatus.RESERVED) {
+            throw new RuntimeException("Only RESERVED tickets can be cancelled");
+        }
+
+        ticket.setStatus(TicketStatus.CANCELLED);
+
+        return ticketRepository.save(ticket);
+    }
 }
