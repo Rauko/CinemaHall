@@ -5,8 +5,10 @@ import com.cinema.repository.ScreeningRepository;
 import com.cinema.repository.SeatRepository;
 import com.cinema.repository.TicketRepository;
 import com.cinema.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -103,5 +105,24 @@ public class TicketService {
         ticket.setStatus(TicketStatus.CANCELLED);
 
         return ticketRepository.save(ticket);
+    }
+
+    @Value("${ticket.reservation-expiration-minutes}")
+    private int reservationTtlMinutes;
+
+    public void expireOldReservations(){
+        LocalDateTime expirationTime =
+                LocalDateTime.now().minusMinutes(reservationTtlMinutes);
+
+        List<Ticket> oldTickets =
+                ticketRepository.findByStatusAndReservedAtBefore(
+                        TicketStatus.EXPIRED,
+                        expirationTime
+                );
+        for (Ticket ticket : oldTickets) {
+            ticket.setStatus(TicketStatus.EXPIRED);
+        }
+
+        ticketRepository.saveAll(oldTickets);
     }
 }
