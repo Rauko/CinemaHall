@@ -12,28 +12,28 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/tickets")
 public class UserTicketController {
 
     private final TicketService ticketService;
-    private final UserService userService;
 
     public UserTicketController(TicketService ticketService, UserService userService) {
         this.ticketService = ticketService;
-        this.userService = userService;
     }
 
-    @GetMapping("/{userId}/tickets")
-    public List<Ticket> getTickets(@PathVariable Long userId) {
-        User user = userService.getUserById(userId);
-        return ticketService.getTicketsByUser(user);
+    // My tickets
+
+    @GetMapping
+    public List<Ticket> getMyTickets() {
+        return ticketService.getMyTickets();
     }
 
-    @GetMapping("/{userId}/tickets/paid")
-    public List<Ticket> getPaidTickets(@PathVariable Long userId) {
-        User user = userService.getUserById(userId);
-        return ticketService.getPaidTicketsByUser(user);
+    @GetMapping("/paid")
+    public List<Ticket> getPaidTickets() {
+        return ticketService.getMyPaidTickets();
     }
+
+    // Create
 
     @PostMapping
     public ResponseEntity<Ticket> createTicket(@RequestBody CreateTicketRequest request,
@@ -42,7 +42,6 @@ public class UserTicketController {
         User user = (User) authentication.getPrincipal();
 
         Ticket ticket = ticketService.createTicket(
-                user.getId(),
                 request.getScreeningId(),
                 request.getSeatId(),
                 request.getGlassesOption()
@@ -51,11 +50,10 @@ public class UserTicketController {
         return ResponseEntity.ok(ticket);
     }
 
+    // Cancel
+
     @PostMapping("/{ticketId}/cancel")
-    public ResponseEntity<Ticket> cancelTicket(
-            @PathVariable Long ticketId,
-            @RequestParam Long userId
-    ) {
-        return ResponseEntity.ok(ticketService.cancelReservation(ticketId, userId));
+    public ResponseEntity<Ticket> cancelTicket(@PathVariable Long ticketId) {
+        return ResponseEntity.ok(ticketService.cancelReservation(ticketId));
     }
 }

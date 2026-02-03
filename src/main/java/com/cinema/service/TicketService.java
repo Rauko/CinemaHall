@@ -5,7 +5,11 @@ import com.cinema.repository.ScreeningRepository;
 import com.cinema.repository.SeatRepository;
 import com.cinema.repository.TicketRepository;
 import com.cinema.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -19,6 +23,10 @@ public class TicketService {
     private final SeatRepository seatRepository;
     private final ScreeningRepository screeningRepository;
 
+    @Value("${ticket.reservation-expiration-minutes}")
+    private int expirationTimeMinutes;
+
+
     public TicketService(TicketRepository ticketRepository,
                          UserRepository userRepository,
                          ScreeningRepository screeningRepository,
@@ -29,26 +37,46 @@ public class TicketService {
         this.seatRepository = seatRepository;
     }
 
-    public List<Ticket> getTicketsByUser(User user){
-        return ticketRepository.findByUser(user);
+    // Current user
+
+    private User getCurrentUser() {
+        Authentication auth =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        return userRepository.findByEmail(auth.getName())
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
-    public List<Ticket> getPaidTicketsByUser(User user){
-        return ticketRepository.findByUserAndStatus(user, TicketStatus.PAID);
+    // Getters
+
+    public List<Ticket> getMyTickets(){
+        return ticketRepository.findByUser(getCurrentUser());
     }
 
-    public List<Ticket> getTicketsByUserAndStatus(User user, TicketStatus status){
-        return ticketRepository.findByUserAndStatus(user, status);
+    public List<Ticket> getMyPaidTickets(){
+        return ticketRepository.findByUserAndStatus(
+                getCurrentUser(),
+                TicketStatus.PAID
+        );
     }
 
-    public Ticket createTicket(Long userId,
-                               Long screeningId,
+    public List<Ticket> getTicketsByUserAndStatus(TicketStatus status){
+        return ticketRepository.findByUserAndStatus(
+                getCurrentUser(),
+                status
+        );
+    }
+
+    // Create Ticket
+
+    public Ticket createTicket(Long screeningId,
                                Long seatId,
                                ImaxGlassesOption glassesOption){
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        User user = getCurrentUser();
+
         Screening screening = screeningRepository.findById(screeningId)
                 .orElseThrow(() -> new RuntimeException("Screening not found"));
+
         Seat seat = seatRepository.findById(seatId)
                 .orElseThrow(() -> new RuntimeException("Seat not found"));
 
@@ -56,8 +84,14 @@ public class TicketService {
             throw new RuntimeException("Seat does not belong to screening hall");
         }
 
-        if (ticketRepository.existsByScreeningIdAndSeatId(screeningId, seatId)) {
-            throw new RuntimeException("Ticket already taken");
+        boolean taken = ticketRepository.existsByScreeningIdAndSeatIdAndStatus(
+                screeningId,
+                seatId,
+                List.of(TicketStatus.PAID, TicketStatus.RESERVED));
+
+
+        if (taken) {
+            throw new RuntimeException("Seat already taken");
         }
 
         Ticket ticket = new Ticket();
@@ -67,6 +101,7 @@ public class TicketService {
 
         double price = screening.getBasePrice();
 
+        // IMAX
         if(screening.isImax()){
             price *= 1.5;
 
@@ -77,6 +112,7 @@ public class TicketService {
             }
         }
 
+        // VIP
         if (seat.getType().equals(SeatType.VIP)) {
             price += 0.5 * screening.getBasePrice();
         }
@@ -89,13 +125,17 @@ public class TicketService {
         return ticketRepository.save(ticket);
     }
 
-    public Ticket cancelReservation(Long ticketId, Long userId){
+    // Cancel Reservation
+
+    public Ticket cancelReservation(Long ticketId){
+
+        User user = getCurrentUser();
 
         Ticket ticket = ticketRepository.findById(ticketId)
                 .orElseThrow(() -> new RuntimeException("Ticket not found"));
 
-        if (!ticket.getUser().getId().equals(userId)) {
-            throw new RuntimeException("You can cancel only your own reservation");
+        if (!ticket.getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("You can cancel only YOUR OWN ticket");
         }
 
         if (ticket.getStatus() != TicketStatus.RESERVED) {
@@ -107,18 +147,20 @@ public class TicketService {
         return ticketRepository.save(ticket);
     }
 
-    @Value("${ticket.reservation-expiration-minutes}")
-    private int reservationTtlMinutes;
+    // Auto expire
 
+    @Scheduled(fixedRate = 60000) //once a minute
+    @Transactional
     public void expireOldReservations(){
         LocalDateTime expirationTime =
-                LocalDateTime.now().minusMinutes(reservationTtlMinutes);
+                LocalDateTime.now().minusMinutes(expirationTimeMinutes);
 
         List<Ticket> oldTickets =
                 ticketRepository.findByStatusAndReservedAtBefore(
                         TicketStatus.EXPIRED,
                         expirationTime
                 );
+
         for (Ticket ticket : oldTickets) {
             ticket.setStatus(TicketStatus.EXPIRED);
         }
