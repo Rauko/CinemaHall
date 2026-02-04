@@ -56,4 +56,11 @@ public class UserTicketController {
     public ResponseEntity<Ticket> cancelTicket(@PathVariable Long ticketId) {
         return ResponseEntity.ok(ticketService.cancelReservation(ticketId));
     }
+
+    // Pay
+
+    @PostMapping("/{ticketId}/pay")
+    public ResponseEntity<Ticket> payTicket(@PathVariable Long ticketId) {
+        return ResponseEntity.ok(ticketService.payForTicket(ticketId));
+    }
 }

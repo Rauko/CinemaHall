@@ -167,4 +167,39 @@ public class TicketService {
 
         ticketRepository.saveAll(oldTickets);
     }
+
+    // Pay
+
+    @Transactional
+    public Ticket payForTicket(Long ticketId){
+        User user = getCurrentUser();
+
+        Ticket ticket = ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new RuntimeException("Ticket not found"));
+
+        if (!ticket.getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("You can pay for YOUR OWN ticket only");
+        }
+
+        if (ticket.getStatus() != TicketStatus.RESERVED) {
+            throw new RuntimeException("Only RESERVED tickets can be paid");
+        }
+
+        //expired payment protection
+        LocalDateTime expirationTime =
+                ticket.getReservedAt().plusMinutes(expirationTimeMinutes);
+
+        if (expirationTime.isBefore(LocalDateTime.now())) {
+            ticket.setStatus(TicketStatus.EXPIRED);
+            ticketRepository.save(ticket);
+            throw new RuntimeException("Ticket reservation expired");
+        }
+
+        //payment must be here
+
+        ticket.setStatus(TicketStatus.PAID);
+        ticket.setPurchaseTime(LocalDateTime.now());
+
+        return ticketRepository.save(ticket);
+    }
 }
