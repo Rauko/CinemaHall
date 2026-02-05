@@ -22,6 +22,7 @@ public class TicketService {
     private final UserRepository userRepository;
     private final SeatRepository seatRepository;
     private final ScreeningRepository screeningRepository;
+    private final PaymentService paymentService;
 
     @Value("${ticket.reservation-expiration-minutes}")
     private int expirationTimeMinutes;
@@ -30,11 +31,13 @@ public class TicketService {
     public TicketService(TicketRepository ticketRepository,
                          UserRepository userRepository,
                          ScreeningRepository screeningRepository,
-                         SeatRepository seatRepository) {
+                         SeatRepository seatRepository,
+                         PaymentService paymentService) {
         this.ticketRepository = ticketRepository;
         this.userRepository = userRepository;
         this.screeningRepository = screeningRepository;
         this.seatRepository = seatRepository;
+        this.paymentService = paymentService;
     }
 
     // Current user
@@ -195,7 +198,12 @@ public class TicketService {
             throw new RuntimeException("Ticket reservation expired");
         }
 
-        //payment must be here
+        //payment itself
+        boolean paymentSuccess =
+                paymentService.processPayment(user, ticket.getPrice());
+        if (!paymentSuccess){
+            throw new RuntimeException("Payment failed");
+        }
 
         ticket.setStatus(TicketStatus.PAID);
         ticket.setPurchaseTime(LocalDateTime.now());
