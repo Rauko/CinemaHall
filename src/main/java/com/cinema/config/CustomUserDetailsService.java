@@ -1,7 +1,7 @@
 package com.cinema.config;
 
 import com.cinema.model.User;
-import com.cinema.model.UserStatus;
+import com.cinema.model.enums.UserStatus;
 import com.cinema.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

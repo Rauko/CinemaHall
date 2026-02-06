@@ -1,7 +1,7 @@
 package com.cinema.repository;
 
 import com.cinema.model.User;
-import com.cinema.model.UserStatus;
+import com.cinema.model.enums.UserStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 

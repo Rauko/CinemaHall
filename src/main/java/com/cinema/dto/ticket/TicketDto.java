@@ -1,8 +1,8 @@
 package com.cinema.dto.ticket;
 
-import com.cinema.model.ImaxGlassesOption;
+import com.cinema.model.enums.ImaxGlassesOption;
 import com.cinema.model.Ticket;
-import com.cinema.model.TicketStatus;
+import com.cinema.model.enums.TicketStatus;
 
 import java.time.LocalDateTime;
 

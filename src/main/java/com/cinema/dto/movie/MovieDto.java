@@ -1,7 +1,7 @@
 package com.cinema.dto.movie;
 
 import com.cinema.model.Movie;
-import com.cinema.model.MovieGenre;
+import com.cinema.model.enums.MovieGenre;
 
 import java.util.Set;
 

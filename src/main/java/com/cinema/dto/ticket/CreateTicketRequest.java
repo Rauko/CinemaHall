@@ -1,6 +1,6 @@
 package com.cinema.dto.ticket;
 
-import com.cinema.model.ImaxGlassesOption;
+import com.cinema.model.enums.ImaxGlassesOption;
 import lombok.Data;
 
 @Data

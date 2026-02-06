@@ -1,5 +1,6 @@
 package com.cinema.controller;
 
+import com.cinema.dto.PaymentRequest;
 import com.cinema.dto.ticket.CreateTicketRequest;
 import com.cinema.model.Ticket;
 import com.cinema.model.User;
@@ -60,7 +61,8 @@ public class UserTicketController {
     // Pay
 
     @PostMapping("/{ticketId}/pay")
-    public ResponseEntity<Ticket> payTicket(@PathVariable Long ticketId) {
-        return ResponseEntity.ok(ticketService.payForTicket(ticketId));
+    public ResponseEntity<Ticket> payForTicket(@PathVariable Long ticketId,
+                                            @RequestBody PaymentRequest request) {
+        return ResponseEntity.ok(ticketService.payForTicket(ticketId, request));
     }
 }
