@@ -173,7 +173,7 @@ public class TicketService {
 
     // Pay
 
-    @Transactional
+    @Transactional // if exception - rollback
     public Ticket payForTicket(Long ticketId){
         User user = getCurrentUser();
 
@@ -199,11 +199,8 @@ public class TicketService {
         }
 
         //payment itself
-        boolean paymentSuccess =
-                paymentService.processPayment(user, ticket.getPrice());
-        if (!paymentSuccess){
-            throw new RuntimeException("Payment failed");
-        }
+        // if failed - EXCEPTION
+        paymentService.processPayment(user, ticket.getPrice());
 
         ticket.setStatus(TicketStatus.PAID);
         ticket.setPurchaseTime(LocalDateTime.now());
