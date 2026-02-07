@@ -1,9 +1,8 @@
 package com.cinema.controller;
 
 import com.cinema.model.Ticket;
-import com.cinema.model.TicketStatus;
+import com.cinema.model.enums.TicketStatus;
 import com.cinema.model.User;
-import com.cinema.repository.TicketRepository;
 import com.cinema.repository.UserRepository;
 import com.cinema.service.TicketService;
 import org.springframework.http.ResponseEntity;
@@ -37,25 +36,16 @@ public class AdminUserController {
 
     @GetMapping("/{id}/tickets")
     public ResponseEntity<List<Ticket>> getUserTickets(@PathVariable Long id){
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        return ResponseEntity.ok(ticketService.getTicketsByUser(user));
+        return ResponseEntity.ok(ticketService.getTicketsByUserId(id));
     }
 
     @GetMapping("/{id}/tickets/paid")
     public ResponseEntity<List<Ticket>> getUserPaidTickets(@PathVariable Long id){
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        return ResponseEntity.ok(ticketService.getTicketsByUserAndStatus(user, TicketStatus.PAID));
+        return ResponseEntity.ok(ticketService.getTicketsByUserIdAndStatus(id, TicketStatus.PAID));
     }
 
     @GetMapping("/{id}/tickets/reserved")
     public ResponseEntity<List<Ticket>> getUserReservedTickets(@PathVariable Long id){
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        return ResponseEntity.ok(ticketService.getTicketsByUserAndStatus(user, TicketStatus.RESERVED));
+        return ResponseEntity.ok(ticketService.getTicketsByUserIdAndStatus(id, TicketStatus.RESERVED));
     }
 }

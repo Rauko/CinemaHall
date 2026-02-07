@@ -24,7 +24,7 @@ public interface TicketRepository  extends JpaRepository<Ticket, Long> {
 
     List<Ticket> findByStatusAndReservedAtBefore(TicketStatus status, LocalDateTime time);
 
-    boolean existsByScreeningIdAndSeatIdAndStatus(
+    boolean existsByScreeningIdAndSeatIdAndStatusIn(
             Long screeningId,
             Long seatId,
             List<TicketStatus> statuses

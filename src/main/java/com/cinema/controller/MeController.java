@@ -2,7 +2,7 @@ package com.cinema.controller;
 
 import com.cinema.dto.ticket.TicketDto;
 import com.cinema.model.Ticket;
-import com.cinema.model.TicketStatus;
+import com.cinema.model.enums.TicketStatus;
 import com.cinema.model.User;
 import com.cinema.service.TicketService;
 import com.cinema.service.UserService;
@@ -14,32 +14,33 @@ import java.util.List;
 @RequestMapping("/api/user/me")
 public class MeController {
 
-    private final UserService userService;
     private final TicketService ticketService;
 
-    public MeController(UserService userService, TicketService ticketService) {
-        this.userService = userService;
+    public MeController(TicketService ticketService) {
         this.ticketService = ticketService;
     }
 
     @GetMapping("/tickets")
     public List<TicketDto> myTickets() {
-        User user = userService.getCurrentUser();
-        List<Ticket> tickets = ticketService.getTicketsByUser(user);
-        return tickets.stream().map(TicketDto::fromEntity).toList();
+        return ticketService.getMyTickets()
+                .stream()
+                .map(TicketDto::fromEntity)
+                .toList();
     }
 
     @GetMapping("/tickets/paid")
     public List<TicketDto> myPaidTickets() {
-        User user = userService.getCurrentUser();
-        List<Ticket> tickets = ticketService.getPaidTicketsByUser(user);
-        return tickets.stream().map(TicketDto::fromEntity).toList();
+        return ticketService.getMyPaidTickets()
+                .stream()
+                .map(TicketDto::fromEntity)
+                .toList();
     }
 
     @GetMapping("/tickets/reserved")
     public List<TicketDto> myReservedTickets() {
-        User user = userService.getCurrentUser();
-        List<Ticket> tickets = ticketService.getTicketsByUserAndStatus(user, TicketStatus.RESERVED);
-        return tickets.stream().map(TicketDto::fromEntity).toList();
+        return ticketService.getMyTicketsByStatus(TicketStatus.RESERVED)
+                .stream()
+                .map(TicketDto::fromEntity)
+                .toList();
     }
 }

@@ -1,6 +1,6 @@
 package com.cinema.controller;
 
-import com.cinema.model.TicketStatus;
+import com.cinema.model.enums.TicketStatus;
 import com.cinema.repository.MovieRepository;
 import com.cinema.repository.TicketRepository;
 import com.cinema.repository.UserRepository;

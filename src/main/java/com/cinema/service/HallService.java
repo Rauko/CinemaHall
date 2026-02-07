@@ -2,7 +2,7 @@ package com.cinema.service;
 
 import com.cinema.model.Hall;
 import com.cinema.model.Seat;
-import com.cinema.model.SeatType;
+import com.cinema.model.enums.SeatType;
 import com.cinema.repository.HallRepository;
 import org.springframework.stereotype.Service;
 

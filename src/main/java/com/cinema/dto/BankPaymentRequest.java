@@ -5,9 +5,7 @@ import lombok.Data;
 @Data
 public class BankPaymentRequest {
 
-    private String cardNumber;
-    private String cvv;
-    private String expirationDate;
+    private String token;
     private double amount;
 
 }

@@ -1,7 +1,7 @@
 package com.cinema.controller;
 
 import com.cinema.model.User;
-import com.cinema.model.UserStatus;
+import com.cinema.model.enums.UserStatus;
 import com.cinema.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

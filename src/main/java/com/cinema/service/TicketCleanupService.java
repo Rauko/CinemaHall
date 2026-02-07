@@ -1,7 +1,7 @@
 package com.cinema.service;
 
 import com.cinema.model.Ticket;
-import com.cinema.model.TicketStatus;
+import com.cinema.model.enums.TicketStatus;
 import com.cinema.repository.TicketRepository;
 
 import org.springframework.beans.factory.annotation.Value;

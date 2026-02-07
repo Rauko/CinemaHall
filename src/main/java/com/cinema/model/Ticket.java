@@ -1,5 +1,7 @@
 package com.cinema.model;
 
+import com.cinema.model.enums.ImaxGlassesOption;
+import com.cinema.model.enums.TicketStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

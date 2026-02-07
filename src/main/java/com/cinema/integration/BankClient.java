@@ -1,10 +1,9 @@
 package com.cinema.integration;
 
 import com.cinema.dto.BankPaymentRequest;
-import com.cinema.dto.BankPaymentResponse;
 import org.springframework.stereotype.Component;
 
-import java.util.UUID;
+import java.util.Random;
 
 
 // Fake Bank for demonstration only
@@ -12,28 +11,18 @@ import java.util.UUID;
 @Component
 public class BankClient {
 
-    public BankPaymentResponse processPayment(BankPaymentRequest request) {
-        BankPaymentResponse response = new BankPaymentResponse();
+    private final Random random = new Random();
 
-        // Network latency imitation
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
+    public boolean charge(BankPaymentRequest request) {
+        // SIMULATION
+        // 90%
+        boolean success = random.nextInt(10) != 0;
 
-        // 85% of success transactions
-        boolean success = Math.random() < 0.85;
+        //Remove when real bank connected
+        System.out.println("Charging token: " + request.getToken());
+        System.out.println("Amount: " + request.getAmount());
+        System.out.println("Result: " + success);
 
-        if (success) {
-            response.setSuccess(true);
-            response.setTransactionId(UUID.randomUUID().toString());
-            response.setMessage("Bank payment successful");
-        } else {
-            response.setSuccess(false);
-            response.setMessage("Bank payment failed: Insufficient funds");
-        }
-
-        return response;
+        return success;
     }
 }

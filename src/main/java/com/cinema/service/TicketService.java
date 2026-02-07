@@ -1,10 +1,12 @@
 package com.cinema.service;
 
+import com.cinema.dto.PaymentRequest;
+import com.cinema.exception.PaymentException;
 import com.cinema.model.*;
-import com.cinema.repository.ScreeningRepository;
-import com.cinema.repository.SeatRepository;
-import com.cinema.repository.TicketRepository;
-import com.cinema.repository.UserRepository;
+import com.cinema.model.enums.ImaxGlassesOption;
+import com.cinema.model.enums.SeatType;
+import com.cinema.model.enums.TicketStatus;
+import com.cinema.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -23,6 +25,7 @@ public class TicketService {
     private final SeatRepository seatRepository;
     private final ScreeningRepository screeningRepository;
     private final PaymentService paymentService;
+    private final PaymentMethodRepository paymentMethodRepository;
 
     @Value("${ticket.reservation-expiration-minutes}")
     private int expirationTimeMinutes;
@@ -32,12 +35,14 @@ public class TicketService {
                          UserRepository userRepository,
                          ScreeningRepository screeningRepository,
                          SeatRepository seatRepository,
-                         PaymentService paymentService) {
+                         PaymentService paymentService,
+                         PaymentMethodRepository paymentMethodRepository) {
         this.ticketRepository = ticketRepository;
         this.userRepository = userRepository;
         this.screeningRepository = screeningRepository;
         this.seatRepository = seatRepository;
         this.paymentService = paymentService;
+        this.paymentMethodRepository = paymentMethodRepository;
     }
 
     // Current user
@@ -63,11 +68,25 @@ public class TicketService {
         );
     }
 
-    public List<Ticket> getTicketsByUserAndStatus(TicketStatus status){
+    public List<Ticket> getMyTicketsByStatus(TicketStatus status){
         return ticketRepository.findByUserAndStatus(
                 getCurrentUser(),
                 status
         );
+    }
+
+    // Admin Getters
+
+    public List<Ticket> getTicketsByUserId(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return ticketRepository.findByUser(user);
+    }
+
+    public List<Ticket> getTicketsByUserIdAndStatus(Long userId, TicketStatus status) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return ticketRepository.findByUserAndStatus(user, status);
     }
 
     // Create Ticket
@@ -87,7 +106,7 @@ public class TicketService {
             throw new RuntimeException("Seat does not belong to screening hall");
         }
 
-        boolean taken = ticketRepository.existsByScreeningIdAndSeatIdAndStatus(
+        boolean taken = ticketRepository.existsByScreeningIdAndSeatIdAndStatusIn(
                 screeningId,
                 seatId,
                 List.of(TicketStatus.PAID, TicketStatus.RESERVED));
@@ -174,7 +193,7 @@ public class TicketService {
     // Pay
 
     @Transactional // if exception - rollback
-    public Ticket payForTicket(Long ticketId){
+    public Ticket payForTicket(Long ticketId, PaymentRequest paymentRequest){
         User user = getCurrentUser();
 
         Ticket ticket = ticketRepository.findById(ticketId)
@@ -198,9 +217,22 @@ public class TicketService {
             throw new RuntimeException("Ticket reservation expired");
         }
 
-        //payment itself
-        // if failed - EXCEPTION
-        paymentService.processPayment(user, ticket.getPrice());
+        //payment itself - if failed - EXCEPTION and rollback
+        PaymentMethod paymentMethod =
+                paymentMethodRepository
+                        .findByUserAndIsDefaultTrue(user)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "No default payment method found for user"));
+
+        try {
+            paymentService.processPayment(
+                    paymentMethod,
+                    ticket.getPrice()
+            );
+        } catch (PaymentException ex) {
+            throw ex;
+        }
 
         ticket.setStatus(TicketStatus.PAID);
         ticket.setPurchaseTime(LocalDateTime.now());
