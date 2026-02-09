@@ -23,6 +23,8 @@ public class PurchaseHistory {
     @ManyToOne(optional = false)
     private Ticket ticket;
 
+    private double amount;
+
     @Enumerated(EnumType.STRING)
     private PurchaseActionType action;
 
