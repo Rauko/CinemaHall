@@ -21,7 +21,7 @@ public class PurchaseHistoryDto {
                 h.getTicket().getId(),
                 h.getAction(),
                 h.getAmount(),
-                h.getMadeAt()
+                h.getPurchaseTime()
         );
     }
 }

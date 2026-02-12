@@ -27,7 +27,7 @@ public class PurchaseHistoryService {
         history.setTicket(ticket);
         history.setAction(action);
         history.setAmount(ticket.getPrice());
-        history.setMadeAt(LocalDateTime.now());
+        history.setPurchaseTime(LocalDateTime.now());
 
         repository.save(history);
     }

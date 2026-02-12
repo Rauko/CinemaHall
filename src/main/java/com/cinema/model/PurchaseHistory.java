@@ -28,5 +28,5 @@ public class PurchaseHistory {
     @Enumerated(EnumType.STRING)
     private PurchaseActionType action;
 
-    private LocalDateTime madeAt;
+    private LocalDateTime purchaseTime;
 }
