@@ -5,7 +5,11 @@ import com.cinema.model.PurchaseHistory;
 import com.cinema.model.Ticket;
 import com.cinema.model.User;
 import com.cinema.model.enums.ExportFormat;
+import com.cinema.repository.UserRepository;
 import com.cinema.service.PurchaseHistoryService;
+import com.cinema.service.UserService;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,35 +20,26 @@ public class PurchaseHistoryExportService {
     private final PurchaseHistoryService purchaseHistoryService;
     private final TxtExportService txtExportService;
     private final PdfExportService pdfExportService;
+    private final UserRepository userRepository;
 
     public PurchaseHistoryExportService(
             PurchaseHistoryService purchaseHistoryService,
             TxtExportService txtExportService,
-            PdfExportService pdfExportService
+            PdfExportService pdfExportService,
+            UserRepository userRepository
     ) {
         this.purchaseHistoryService = purchaseHistoryService;
         this.txtExportService = txtExportService;
         this.pdfExportService = pdfExportService;
+        this.userRepository = userRepository;
     }
 
-    public byte[] exportForUser(User user, ExportFormat format) {
-
-        //TODO: will need to rewrite for auth later
-
-        List<PurchaseHistoryExportDto> data =
-                purchaseHistoryService.getUserHistory(user)
-                        .stream()
-                        .map(this::map)
-                        .toList();
-
-        return export(data,format);
+    public byte[] exportForCurrentUser(ExportFormat format) {
+        return buildExport(getCurrentUser(), format);
     }
 
-    private byte[] exportForAdmin(User user, ExportFormat format) {
-
-        //TODO: after exportForUser will be changed take that method here
-
-        return exportForUser(user, format);
+    public byte[] exportForAdmin(User user, ExportFormat format) {
+        return buildExport(user, format);
     }
 
     private byte[] export(List<PurchaseHistoryExportDto> data, ExportFormat format) {
@@ -66,5 +61,23 @@ public class PurchaseHistoryExportService {
                 history.getAmount(),
                 history.getPurchaseTime()
         );
+    }
+
+    private User getCurrentUser() {
+        Authentication auth =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        return userRepository.findByEmail(auth.getName())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    private byte[] buildExport(User user, ExportFormat format) {
+        List<PurchaseHistoryExportDto> data =
+                purchaseHistoryService.getUserHistory(user)
+                        .stream()
+                        .map(this::map)
+                        .toList();
+
+        return export(data,format);
     }
 }
