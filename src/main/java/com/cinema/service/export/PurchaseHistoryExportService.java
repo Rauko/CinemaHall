@@ -5,9 +5,9 @@ import com.cinema.model.PurchaseHistory;
 import com.cinema.model.Ticket;
 import com.cinema.model.User;
 import com.cinema.model.enums.ExportFormat;
+import com.cinema.repository.PurchaseHistoryRepository;
 import com.cinema.repository.UserRepository;
 import com.cinema.service.PurchaseHistoryService;
-import com.cinema.service.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -21,17 +21,20 @@ public class PurchaseHistoryExportService {
     private final TxtExportService txtExportService;
     private final PdfExportService pdfExportService;
     private final UserRepository userRepository;
+    private final PurchaseHistoryRepository purchaseHistoryRepository;
 
     public PurchaseHistoryExportService(
             PurchaseHistoryService purchaseHistoryService,
             TxtExportService txtExportService,
             PdfExportService pdfExportService,
-            UserRepository userRepository
+            UserRepository userRepository,
+            PurchaseHistoryRepository purchaseHistoryRepository
     ) {
         this.purchaseHistoryService = purchaseHistoryService;
         this.txtExportService = txtExportService;
         this.pdfExportService = pdfExportService;
         this.userRepository = userRepository;
+        this.purchaseHistoryRepository = purchaseHistoryRepository;
     }
 
     public byte[] exportForCurrentUser(ExportFormat format) {
@@ -79,5 +82,17 @@ public class PurchaseHistoryExportService {
                         .toList();
 
         return export(data,format);
+    }
+
+    public byte[] exportAllUsers(ExportFormat format) {
+
+        List<PurchaseHistoryExportDto> data =
+                purchaseHistoryRepository.findAll()
+                        .stream()
+                        .map(this::map)
+                        .toList();
+
+        return export(data,format);
+
     }
 }
