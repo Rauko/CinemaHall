@@ -14,9 +14,12 @@ import java.util.List;
 public class PurchaseHistoryService {
 
     private PurchaseHistoryRepository repository;
+    private UserService userService;
 
-    public PurchaseHistoryService(PurchaseHistoryRepository repository) {
+    public PurchaseHistoryService(PurchaseHistoryRepository repository,
+                                  UserService userService) {
         this.repository = repository;
+        this.userService = userService;
     }
 
     public void record(User user,
@@ -34,5 +37,17 @@ public class PurchaseHistoryService {
 
     public List<PurchaseHistory> getUserHistory(User user) {
         return  repository.findByUserOrderByCreatedAtDesc(user);
+    }
+
+    public List<PurchaseHistory> getUserHistoryForPeriod(User user,
+                                                         LocalDateTime start,
+                                                         LocalDateTime end) {
+        return repository.findByUserAndMadeAtBetween(user, start, end);
+    }
+
+    public List<PurchaseHistory> getHistoryForPeriod(LocalDateTime start,
+                                                     LocalDateTime end) {
+        User user = userService.getCurrentUser();
+        return repository.findByUserAndMadeAtBetween(user, start, end);
     }
 }
