@@ -12,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -94,5 +95,37 @@ public class PurchaseHistoryExportService {
 
         return export(data,format);
 
+    }
+
+    public byte[] exportForCurrentUserPeriod(
+            LocalDateTime start,
+            LocalDateTime end,
+            ExportFormat format) {
+        User user = getCurrentUser();
+
+        List<PurchaseHistoryExportDto> data =
+                purchaseHistoryService
+                        .getUserHistoryForPeriod(user, start, end )
+                        .stream()
+                        .map(this::map)
+                        .toList();
+
+        return export(data,format);
+    }
+
+    public byte[] exportForAdminPeriod(
+            User user,
+            LocalDateTime start,
+            LocalDateTime end,
+            ExportFormat format) {
+
+        List<PurchaseHistoryExportDto> data =
+                purchaseHistoryService
+                        .getUserHistoryForPeriod(user, start, end )
+                        .stream()
+                        .map(this::map)
+                        .toList();
+
+        return export(data,format);
     }
 }

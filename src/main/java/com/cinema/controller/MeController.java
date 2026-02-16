@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -89,6 +90,36 @@ public class MeController {
                 timestamp,
                 format.name().toLowerCase()
         );
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=" + filename)
+                .body(file);
+    }
+
+    @GetMapping("/history/export/period")
+    public ResponseEntity<byte[]> exportMyHistoryPeriod(
+            @RequestParam String start,
+            @RequestParam String end,
+            @RequestParam ExportFormat format,
+            Authentication auth) {
+
+        LocalDateTime startDate = LocalDateTime.parse(start).withSecond(0).withNano(0).withMinute(0).withHour(0);
+        LocalDateTime endDate = LocalDateTime.parse(end);
+
+        byte[] file = purchaseHistoryExportService
+                .exportForCurrentUserPeriod(startDate, endDate, format);
+
+        String username = auth.getName();
+
+        String timestamp = startDate.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+                + "-" + endDate.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd_hh:mm"));
+
+        String filename = String.format(
+                "history-%s-%s.%s",
+                username,
+                timestamp,
+                format.name().toLowerCase());
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION,
