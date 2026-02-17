@@ -9,6 +9,8 @@ import com.cinema.service.PurchaseHistoryService;
 import com.cinema.service.TicketService;
 import com.cinema.service.UserService;
 import com.cinema.service.export.PurchaseHistoryExportService;
+import com.cinema.util.DateParseUtil;
+import com.cinema.util.FilenameConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -79,22 +81,26 @@ public class MeController {
 
         String username = auth.getName();
 
-        String timestamp = java.time.LocalDateTime.now()
-                .withSecond(0)
-                .withNano(0)
-                .format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm"));
-
-        String filename = String.format(
-                "history_%s-%s.%s",
-                username,
-                timestamp,
-                format.name().toLowerCase()
-        );
-
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION,
-                        "attachment; filename=" + filename)
+                        "attachment; filename=" +
+                                FilenameConstructor.filenameUpToDate(username, LocalDateTime.now(), format))
                 .body(file);
+    }
+
+    @GetMapping("/history/period")
+    public List<PurchaseHistoryDto> myHistoryForPeriod(
+            @RequestParam String start,
+            @RequestParam String end){
+
+        LocalDateTime startDate = DateParseUtil.parseStartDate(start);
+        LocalDateTime endDate = DateParseUtil.parseEndDate(end);
+
+        return purchaseHistoryService
+                .getHistoryForPeriod(startDate, endDate)
+                .stream()
+                .map(PurchaseHistoryDto::fromEntity)
+                .toList();
     }
 
     @GetMapping("/history/export/period")
@@ -104,26 +110,18 @@ public class MeController {
             @RequestParam ExportFormat format,
             Authentication auth) {
 
-        LocalDateTime startDate = LocalDateTime.parse(start).withSecond(0).withNano(0).withMinute(0).withHour(0);
-        LocalDateTime endDate = LocalDateTime.parse(end);
+        LocalDateTime startDate = DateParseUtil.parseStartDate(start);
+        LocalDateTime endDate = DateParseUtil.parseEndDate(end);
 
         byte[] file = purchaseHistoryExportService
                 .exportForCurrentUserPeriod(startDate, endDate, format);
 
         String username = auth.getName();
 
-        String timestamp = startDate.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-                + "-" + endDate.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd_hh:mm"));
-
-        String filename = String.format(
-                "history-%s-%s.%s",
-                username,
-                timestamp,
-                format.name().toLowerCase());
-
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION,
-                        "attachment; filename=" + filename)
+                        "attachment; filename=" +
+                                FilenameConstructor.filename(username, startDate, endDate, format))
                 .body(file);
     }
 }
