@@ -5,9 +5,12 @@ import com.cinema.model.Ticket;
 import com.cinema.model.User;
 import com.cinema.model.enums.PurchaseActionType;
 import com.cinema.repository.PurchaseHistoryRepository;
+import com.cinema.util.LoginLevelCheckUtil;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -49,5 +52,27 @@ public class PurchaseHistoryService {
                                                      LocalDateTime end) {
         User user = userService.getCurrentUser();
         return repository.findByUserAndMadeAtBetween(user, start, end);
+    }
+
+    public double getRevenueForDay(LocalDate date) {
+
+        LoginLevelCheckUtil.requireAdminOrSuperAdmin();
+
+        LocalDateTime start = date.atStartOfDay();
+        LocalDateTime end = date.atTime(LocalTime.MAX);
+
+        return repository.sumRevenueBetween(start,end);
+    }
+
+    public double getRevenueForMonth(int year, int month) {
+        LoginLevelCheckUtil.requireAdminOrSuperAdmin();
+
+        LocalDate start = LocalDate.of(year, month, 1);
+        LocalDate end = start.withDayOfMonth(start.lengthOfMonth());
+
+        return repository.sumRevenueBetween(
+                start.atStartOfDay(),
+                end.atTime(LocalTime.MAX)
+        );
     }
 }

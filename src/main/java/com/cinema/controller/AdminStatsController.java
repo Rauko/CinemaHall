@@ -7,11 +7,15 @@ import com.cinema.repository.MovieRepository;
 import com.cinema.repository.PurchaseHistoryRepository;
 import com.cinema.repository.TicketRepository;
 import com.cinema.repository.UserRepository;
+import com.cinema.service.PurchaseHistoryService;
 import com.cinema.service.export.PurchaseHistoryExportService;
+import com.cinema.util.FilenameConstructorUtil;
+import com.cinema.util.LoginLevelCheckUtil;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,15 +27,18 @@ public class AdminStatsController {
     private final MovieRepository movieRepository;
     private final TicketRepository ticketRepository;
     private final PurchaseHistoryExportService purchaseHistoryExportService;
+    private final PurchaseHistoryService purchaseHistoryService;
 
     public AdminStatsController(UserRepository userRepository,
                                 MovieRepository movieRepository,
                                 TicketRepository ticketRepository,
-                                PurchaseHistoryExportService purchaseHistoryExportService) {
+                                PurchaseHistoryExportService purchaseHistoryExportService,
+                                PurchaseHistoryService purchaseHistoryService) {
         this.userRepository = userRepository;
         this.movieRepository = movieRepository;
         this.ticketRepository = ticketRepository;
         this.purchaseHistoryExportService = purchaseHistoryExportService;
+        this.purchaseHistoryService = purchaseHistoryService;
     }
 
     @GetMapping
@@ -53,19 +60,20 @@ public class AdminStatsController {
 
         byte[] file = purchaseHistoryExportService.exportForAdmin(user, format);
 
-        String timestamp = java.time.LocalDateTime.now()
-                .withSecond(0)
-                .withNano(0)
-                .format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm"));
-
-        String filename = "user_" + userId + "_" + timestamp + "." +
-                format.name().toLowerCase();
-
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION,
-                        "attachment; filename=" + filename
-                )
+                        "attachment; filename=" + FilenameConstructorUtil.filenameUpToNow(user.getName(), format))
                 .body(file);
+    }
 
+    @GetMapping("/revenue/day")
+    public double revenueForDay(@RequestParam String date){
+        return purchaseHistoryService.getRevenueForDay(LocalDate.parse(date));
+    }
+
+    @GetMapping("/revenue/month")
+    public double revenueForMonth(@RequestParam int year,
+                                  @RequestParam int month){
+        return purchaseHistoryService.getRevenueForMonth(year, month);
     }
 }

@@ -4,7 +4,7 @@ import com.cinema.model.enums.ExportFormat;
 
 import java.time.LocalDateTime;
 
-public class FilenameConstructor {
+public class FilenameConstructorUtil {
     public static String filename(
             String username,
             LocalDateTime start,
@@ -16,6 +16,19 @@ public class FilenameConstructor {
 
         return String.format(
                 "history-%s-%s.%s",
+                username,
+                timestamp,
+                format.name().toLowerCase());
+    }
+    public static String filenameUpToNow(
+            String username,
+            ExportFormat format) {
+
+        String timestamp = LocalDateTime.now()
+                                .format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm"));
+
+        return String.format(
+                "history_%s_%s.%s",
                 username,
                 timestamp,
                 format.name().toLowerCase());

@@ -10,7 +10,7 @@ import com.cinema.service.TicketService;
 import com.cinema.service.UserService;
 import com.cinema.service.export.PurchaseHistoryExportService;
 import com.cinema.util.DateParseUtil;
-import com.cinema.util.FilenameConstructor;
+import com.cinema.util.FilenameConstructorUtil;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -84,7 +84,7 @@ public class MeController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION,
                         "attachment; filename=" +
-                                FilenameConstructor.filenameUpToDate(username, LocalDateTime.now(), format))
+                                FilenameConstructorUtil.filenameUpToDate(username, LocalDateTime.now(), format))
                 .body(file);
     }
 
@@ -121,7 +121,7 @@ public class MeController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION,
                         "attachment; filename=" +
-                                FilenameConstructor.filename(username, startDate, endDate, format))
+                                FilenameConstructorUtil.filename(username, startDate, endDate, format))
                 .body(file);
     }
 }

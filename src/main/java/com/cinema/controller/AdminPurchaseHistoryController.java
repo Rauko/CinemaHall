@@ -5,7 +5,7 @@ import com.cinema.model.enums.ExportFormat;
 import com.cinema.service.UserService;
 import com.cinema.service.export.PurchaseHistoryExportService;
 import com.cinema.util.DateParseUtil;
-import com.cinema.util.FilenameConstructor;
+import com.cinema.util.FilenameConstructorUtil;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -46,7 +46,7 @@ public class AdminPurchaseHistoryController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION,
                         "attachment; filename=" +
-                                FilenameConstructor.filename(username, startDate, endDate, format))
+                                FilenameConstructorUtil.filename(username, startDate, endDate, format))
                 .body(file);
     }
 }
