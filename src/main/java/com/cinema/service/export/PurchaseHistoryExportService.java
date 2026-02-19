@@ -94,7 +94,6 @@ public class PurchaseHistoryExportService {
                         .toList();
 
         return export(data,format);
-
     }
 
     public byte[] exportForCurrentUserPeriod(

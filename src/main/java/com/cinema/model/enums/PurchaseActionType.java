@@ -4,5 +4,6 @@ public enum PurchaseActionType {
     RESERVED,
     PAID,
     CANCELLED,
-    EXPIRED
+    EXPIRED,
+    PURCHASE
 }

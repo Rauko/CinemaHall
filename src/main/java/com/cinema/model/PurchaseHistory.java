@@ -1,5 +1,6 @@
 package com.cinema.model;
 
+import com.cinema.model.enums.PaymentStatus;
 import com.cinema.model.enums.PurchaseActionType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -29,4 +30,6 @@ public class PurchaseHistory {
     private PurchaseActionType action;
 
     private LocalDateTime purchaseTime;
+
+    private PaymentStatus paymentStatus;
 }

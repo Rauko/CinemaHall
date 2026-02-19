@@ -2,10 +2,9 @@ package com.cinema.service;
 
 import com.cinema.dto.PaymentRequest;
 import com.cinema.exception.PaymentException;
+import com.cinema.exception.ReservationExpiredException;
 import com.cinema.model.*;
-import com.cinema.model.enums.ImaxGlassesOption;
-import com.cinema.model.enums.SeatType;
-import com.cinema.model.enums.TicketStatus;
+import com.cinema.model.enums.*;
 import com.cinema.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,6 +25,7 @@ public class TicketService {
     private final ScreeningRepository screeningRepository;
     private final PaymentService paymentService;
     private final PaymentMethodRepository paymentMethodRepository;
+    private final PurchaseHistoryRepository purchaseHistoryRepository;
 
     @Value("${ticket.reservation-expiration-minutes}")
     private int expirationTimeMinutes;
@@ -36,13 +36,15 @@ public class TicketService {
                          ScreeningRepository screeningRepository,
                          SeatRepository seatRepository,
                          PaymentService paymentService,
-                         PaymentMethodRepository paymentMethodRepository) {
+                         PaymentMethodRepository paymentMethodRepository,
+                         PurchaseHistoryRepository purchaseHistoryRepository) {
         this.ticketRepository = ticketRepository;
         this.userRepository = userRepository;
         this.screeningRepository = screeningRepository;
         this.seatRepository = seatRepository;
         this.paymentService = paymentService;
         this.paymentMethodRepository = paymentMethodRepository;
+        this.purchaseHistoryRepository = purchaseHistoryRepository;
     }
 
     // Current user
@@ -207,6 +209,16 @@ public class TicketService {
             throw new RuntimeException("Only RESERVED tickets can be paid");
         }
 
+        PurchaseHistory history = new PurchaseHistory();
+        history.setUser(user);
+        history.setAmount(ticket.getPrice());
+        history.setAction(PurchaseActionType.PURCHASE);
+        history.setPurchaseTime(LocalDateTime.now());
+        history.setPaymentStatus(PaymentStatus.PENDING);
+
+        purchaseHistoryRepository.save(history);
+
+
         //expired payment protection
         LocalDateTime expirationTime =
                 ticket.getReservedAt().plusMinutes(expirationTimeMinutes);
@@ -214,7 +226,11 @@ public class TicketService {
         if (expirationTime.isBefore(LocalDateTime.now())) {
             ticket.setStatus(TicketStatus.EXPIRED);
             ticketRepository.save(ticket);
-            throw new RuntimeException("Ticket reservation expired");
+
+            history.setPaymentStatus(PaymentStatus.EXPIRED);
+            purchaseHistoryRepository.save(history);
+
+            throw new ReservationExpiredException("Ticket reservation expired");
         }
 
         //payment itself - if failed - EXCEPTION and rollback
@@ -231,8 +247,13 @@ public class TicketService {
                     ticket.getPrice()
             );
         } catch (PaymentException ex) {
+            history.setPaymentStatus(PaymentStatus.FAILED);
+            purchaseHistoryRepository.save(history);
             throw ex;
         }
+
+        history.setPaymentStatus(PaymentStatus.SUCCESS);
+        purchaseHistoryRepository.save(history);
 
         ticket.setStatus(TicketStatus.PAID);
         ticket.setPurchaseTime(LocalDateTime.now());
