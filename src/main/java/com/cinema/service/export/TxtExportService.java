@@ -1,10 +1,12 @@
 package com.cinema.service.export;
 
 import com.cinema.dto.export.PurchaseHistoryExportDto;
+import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+@Service
 public class TxtExportService {
     public byte[] export(List<PurchaseHistoryExportDto> data) {
         StringBuilder sb = new StringBuilder();

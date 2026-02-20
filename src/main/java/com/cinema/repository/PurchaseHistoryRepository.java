@@ -12,9 +12,9 @@ import java.util.List;
 public interface PurchaseHistoryRepository
         extends JpaRepository<PurchaseHistory, Long> {
 
-    List<PurchaseHistory> findByUserOrderByCreatedAtDesc(User user);
+    List<PurchaseHistory> findByUserOrderByPurchaseTimeDesc(User user);
 
-    List<PurchaseHistory> findByUserAndMadeAtBetween(
+    List<PurchaseHistory> findByUserAndPurchaseTimeBetween(
             User user,
             LocalDateTime start,
             LocalDateTime end

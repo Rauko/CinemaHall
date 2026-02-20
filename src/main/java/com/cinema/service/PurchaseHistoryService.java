@@ -39,19 +39,19 @@ public class PurchaseHistoryService {
     }
 
     public List<PurchaseHistory> getUserHistory(User user) {
-        return  repository.findByUserOrderByCreatedAtDesc(user);
+        return  repository.findByUserOrderByPurchaseTimeDesc(user);
     }
 
     public List<PurchaseHistory> getUserHistoryForPeriod(User user,
                                                          LocalDateTime start,
                                                          LocalDateTime end) {
-        return repository.findByUserAndMadeAtBetween(user, start, end);
+        return repository.findByUserAndPurchaseTimeBetween(user, start, end);
     }
 
     public List<PurchaseHistory> getHistoryForPeriod(LocalDateTime start,
                                                      LocalDateTime end) {
         User user = userService.getCurrentUser();
-        return repository.findByUserAndMadeAtBetween(user, start, end);
+        return repository.findByUserAndPurchaseTimeBetween(user, start, end);
     }
 
     public double getRevenueForDay(LocalDate date) {

@@ -4,10 +4,12 @@ import com.cinema.dto.export.PurchaseHistoryExportDto;
 import com.lowagie.text.Document;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfWriter;
+import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
 import java.util.List;
 
+@Service
 public class PdfExportService {
     public byte[] export(List<PurchaseHistoryExportDto> data) {
 

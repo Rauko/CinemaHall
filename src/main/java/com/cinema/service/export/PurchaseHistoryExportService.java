@@ -21,6 +21,7 @@ public class PurchaseHistoryExportService {
     private final PurchaseHistoryService purchaseHistoryService;
     private final TxtExportService txtExportService;
     private final PdfExportService pdfExportService;
+    private final CsvExportService csvExportService;
     private final UserRepository userRepository;
     private final PurchaseHistoryRepository purchaseHistoryRepository;
 
@@ -28,12 +29,14 @@ public class PurchaseHistoryExportService {
             PurchaseHistoryService purchaseHistoryService,
             TxtExportService txtExportService,
             PdfExportService pdfExportService,
+            CsvExportService csvExportService,
             UserRepository userRepository,
             PurchaseHistoryRepository purchaseHistoryRepository
     ) {
         this.purchaseHistoryService = purchaseHistoryService;
         this.txtExportService = txtExportService;
         this.pdfExportService = pdfExportService;
+        this.csvExportService = csvExportService;
         this.userRepository = userRepository;
         this.purchaseHistoryRepository = purchaseHistoryRepository;
     }
@@ -50,6 +53,7 @@ public class PurchaseHistoryExportService {
         return switch (format) {
             case TXT -> txtExportService.export(data);
             case PDF -> pdfExportService.export(data);
+            case CSV -> csvExportService.export(data);
         };
     }
 

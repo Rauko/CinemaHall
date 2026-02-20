@@ -14,7 +14,7 @@ public class PurchaseHistoryDto {
     private Long ticketId;
     private PurchaseActionType action;
     private double amount;
-    private LocalDateTime createAt;
+    private LocalDateTime purchaseTime;
 
     public static PurchaseHistoryDto fromEntity(PurchaseHistory h) {
         return new PurchaseHistoryDto(
