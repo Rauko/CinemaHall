@@ -6,6 +6,7 @@ import com.cinema.model.User;
 import com.cinema.model.enums.PurchaseActionType;
 import com.cinema.repository.PurchaseHistoryRepository;
 import com.cinema.util.LoginLevelCheckUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -14,16 +15,11 @@ import java.time.LocalTime;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class PurchaseHistoryService {
 
     private PurchaseHistoryRepository repository;
     private UserService userService;
-
-    public PurchaseHistoryService(PurchaseHistoryRepository repository,
-                                  UserService userService) {
-        this.repository = repository;
-        this.userService = userService;
-    }
 
     public void record(User user,
                        Ticket ticket,

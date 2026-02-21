@@ -1,24 +1,17 @@
 package com.cinema.service;
 
 import com.cinema.dto.BankPaymentRequest;
-import com.cinema.dto.BankPaymentResponse;
-import com.cinema.dto.PaymentRequest;
 import com.cinema.exception.PaymentException;
 import com.cinema.integration.BankClient;
 import com.cinema.model.PaymentMethod;
-import com.cinema.model.User;
-import com.cinema.model.enums.PaymentMethodType;
-import com.cinema.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class PaymentService {
 
     private final BankClient bankClient;
-
-    public PaymentService(UserRepository userRepository) {
-        this.bankClient = new BankClient();
-    }
 
     public void processPayment(PaymentMethod method,
                                double amount){

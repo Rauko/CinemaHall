@@ -2,19 +2,17 @@ package com.cinema.controller;
 
 import com.cinema.model.enums.ExportFormat;
 import com.cinema.service.export.PurchaseHistoryExportService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/admin")
 public class AdminController {
 
     private final PurchaseHistoryExportService purchaseHistoryExportService;
-
-    public AdminController(PurchaseHistoryExportService purchaseHistoryExportService) {
-        this.purchaseHistoryExportService = purchaseHistoryExportService;
-    }
 
     @GetMapping("/ping")
     public ResponseEntity<String> ping() {

@@ -11,6 +11,7 @@ import com.cinema.service.UserService;
 import com.cinema.service.export.PurchaseHistoryExportService;
 import com.cinema.util.DateParseUtil;
 import com.cinema.util.FilenameConstructorUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -20,6 +21,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/user/me")
 public class MeController {
 
@@ -27,16 +29,6 @@ public class MeController {
     private final UserService userService;
     private final PurchaseHistoryService purchaseHistoryService;
     private final PurchaseHistoryExportService purchaseHistoryExportService;
-
-    public MeController(TicketService ticketService,
-                        UserService userService,
-                        PurchaseHistoryService purchaseHistoryService,
-                        PurchaseHistoryExportService purchaseHistoryExportService) {
-        this.ticketService = ticketService;
-        this.userService = userService;
-        this.purchaseHistoryService = purchaseHistoryService;
-        this.purchaseHistoryExportService = purchaseHistoryExportService;
-    }
 
     @GetMapping("/tickets")
     public List<TicketDto> myTickets() {

@@ -5,7 +5,7 @@ import com.cinema.dto.ticket.CreateTicketRequest;
 import com.cinema.model.Ticket;
 import com.cinema.model.User;
 import com.cinema.service.TicketService;
-import com.cinema.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -13,14 +13,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/tickets")
 public class UserTicketController {
 
     private final TicketService ticketService;
-
-    public UserTicketController(TicketService ticketService, UserService userService) {
-        this.ticketService = ticketService;
-    }
 
     // My tickets
 

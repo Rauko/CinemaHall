@@ -3,20 +3,18 @@ package com.cinema.controller;
 import com.cinema.dto.movie.MovieDto;
 import com.cinema.model.Movie;
 import com.cinema.service.MovieService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/movies")
 public class MovieController {
 
     private final MovieService movieService;
-
-    public MovieController(MovieService movieService) {
-        this.movieService = movieService;
-    }
 
     @GetMapping
     public List<MovieDto> getAllMovies() {

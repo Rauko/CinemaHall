@@ -11,6 +11,7 @@ import com.cinema.service.PurchaseHistoryService;
 import com.cinema.service.export.PurchaseHistoryExportService;
 import com.cinema.util.FilenameConstructorUtil;
 import com.cinema.util.LoginLevelCheckUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/admin/stats")
 public class AdminStatsController {
 
@@ -28,18 +30,6 @@ public class AdminStatsController {
     private final TicketRepository ticketRepository;
     private final PurchaseHistoryExportService purchaseHistoryExportService;
     private final PurchaseHistoryService purchaseHistoryService;
-
-    public AdminStatsController(UserRepository userRepository,
-                                MovieRepository movieRepository,
-                                TicketRepository ticketRepository,
-                                PurchaseHistoryExportService purchaseHistoryExportService,
-                                PurchaseHistoryService purchaseHistoryService) {
-        this.userRepository = userRepository;
-        this.movieRepository = movieRepository;
-        this.ticketRepository = ticketRepository;
-        this.purchaseHistoryExportService = purchaseHistoryExportService;
-        this.purchaseHistoryService = purchaseHistoryService;
-    }
 
     @GetMapping
     public Map<String, Object> getStats(){

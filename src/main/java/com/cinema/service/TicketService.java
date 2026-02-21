@@ -7,16 +7,16 @@ import com.cinema.model.*;
 import com.cinema.model.enums.*;
 import com.cinema.repository.*;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class TicketService {
 
     private final TicketRepository ticketRepository;
@@ -26,53 +26,27 @@ public class TicketService {
     private final PaymentService paymentService;
     private final PaymentMethodRepository paymentMethodRepository;
     private final PurchaseHistoryRepository purchaseHistoryRepository;
+    private final UserService userService;
 
     @Value("${ticket.reservation-expiration-minutes}")
     private int expirationTimeMinutes;
 
-
-    public TicketService(TicketRepository ticketRepository,
-                         UserRepository userRepository,
-                         ScreeningRepository screeningRepository,
-                         SeatRepository seatRepository,
-                         PaymentService paymentService,
-                         PaymentMethodRepository paymentMethodRepository,
-                         PurchaseHistoryRepository purchaseHistoryRepository) {
-        this.ticketRepository = ticketRepository;
-        this.userRepository = userRepository;
-        this.screeningRepository = screeningRepository;
-        this.seatRepository = seatRepository;
-        this.paymentService = paymentService;
-        this.paymentMethodRepository = paymentMethodRepository;
-        this.purchaseHistoryRepository = purchaseHistoryRepository;
-    }
-
-    // Current user
-
-    private User getCurrentUser() {
-        Authentication auth =
-                SecurityContextHolder.getContext().getAuthentication();
-
-        return userRepository.findByEmail(auth.getName())
-                .orElseThrow(() -> new RuntimeException("User not found"));
-    }
-
     // Getters
 
     public List<Ticket> getMyTickets(){
-        return ticketRepository.findByUser(getCurrentUser());
+        return ticketRepository.findByUser(userService.getCurrentUser());
     }
 
     public List<Ticket> getMyPaidTickets(){
         return ticketRepository.findByUserAndStatus(
-                getCurrentUser(),
+                userService.getCurrentUser(),
                 TicketStatus.PAID
         );
     }
 
     public List<Ticket> getMyTicketsByStatus(TicketStatus status){
         return ticketRepository.findByUserAndStatus(
-                getCurrentUser(),
+                userService.getCurrentUser(),
                 status
         );
     }
@@ -96,7 +70,7 @@ public class TicketService {
     public Ticket createTicket(Long screeningId,
                                Long seatId,
                                ImaxGlassesOption glassesOption){
-        User user = getCurrentUser();
+        User user = userService.getCurrentUser();
 
         Screening screening = screeningRepository.findById(screeningId)
                 .orElseThrow(() -> new RuntimeException("Screening not found"));
@@ -153,7 +127,7 @@ public class TicketService {
 
     public Ticket cancelReservation(Long ticketId){
 
-        User user = getCurrentUser();
+        User user = userService.getCurrentUser();
 
         Ticket ticket = ticketRepository.findById(ticketId)
                 .orElseThrow(() -> new RuntimeException("Ticket not found"));
@@ -196,7 +170,7 @@ public class TicketService {
 
     @Transactional // if exception - rollback
     public Ticket payForTicket(Long ticketId, PaymentRequest paymentRequest){
-        User user = getCurrentUser();
+        User user = userService.getCurrentUser();
 
         Ticket ticket = ticketRepository.findById(ticketId)
                 .orElseThrow(() -> new RuntimeException("Ticket not found"));

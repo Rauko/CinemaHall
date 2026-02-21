@@ -5,18 +5,16 @@ import com.cinema.model.PaymentMethod;
 import com.cinema.model.User;
 import com.cinema.model.enums.PaymentMethodType;
 import com.cinema.repository.PaymentMethodRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class PaymentMethodService {
 
     private final PaymentMethodRepository repository;
-
-    public PaymentMethodService(PaymentMethodRepository repository) {
-        this.repository = repository;
-    }
 
     public PaymentMethod addMethod(User user, AddPaymentMethodRequest request) {
 

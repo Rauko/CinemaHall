@@ -2,22 +2,18 @@ package com.cinema.service;
 
 import com.cinema.model.User;
 import com.cinema.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-
-    public UserService(UserRepository userRepository,
-                       PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     public User getUserById(Long id) {
         return userRepository.findById(id)
@@ -30,14 +26,15 @@ public class UserService {
     }
 
     public User getCurrentUser() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Authentication auth =
+                SecurityContextHolder.getContext().getAuthentication();
 
-        if (auth == null || auth.getName() == null) {
-            throw new RuntimeException("Unauthorized");
+        if (auth == null) {
+            throw new RuntimeException("No authenticated user");
         }
 
-        String email = auth.getName();
-        return getUserByEmail(email);
+        return userRepository.findByEmail(auth.getName())
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     public User updateName(String newName) {

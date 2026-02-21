@@ -6,6 +6,7 @@ import com.cinema.service.UserService;
 import com.cinema.service.export.PurchaseHistoryExportService;
 import com.cinema.util.DateParseUtil;
 import com.cinema.util.FilenameConstructorUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,18 +14,12 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/admin/history")
 public class AdminPurchaseHistoryController {
 
     private final UserService userService;
     private final PurchaseHistoryExportService purchaseHistoryExportService;
-
-    public AdminPurchaseHistoryController(
-            UserService userService,
-            PurchaseHistoryExportService purchaseHistoryExportService) {
-        this.userService = userService;
-        this.purchaseHistoryExportService = purchaseHistoryExportService;
-    }
 
     @GetMapping("/users/{userId}/export/period")
     public ResponseEntity<byte[]> exportUserHistoryForPeriod(

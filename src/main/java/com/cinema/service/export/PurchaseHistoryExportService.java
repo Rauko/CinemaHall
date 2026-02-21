@@ -6,43 +6,27 @@ import com.cinema.model.Ticket;
 import com.cinema.model.User;
 import com.cinema.model.enums.ExportFormat;
 import com.cinema.repository.PurchaseHistoryRepository;
-import com.cinema.repository.UserRepository;
 import com.cinema.service.PurchaseHistoryService;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import com.cinema.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class PurchaseHistoryExportService {
 
     private final PurchaseHistoryService purchaseHistoryService;
     private final TxtExportService txtExportService;
     private final PdfExportService pdfExportService;
     private final CsvExportService csvExportService;
-    private final UserRepository userRepository;
     private final PurchaseHistoryRepository purchaseHistoryRepository;
-
-    public PurchaseHistoryExportService(
-            PurchaseHistoryService purchaseHistoryService,
-            TxtExportService txtExportService,
-            PdfExportService pdfExportService,
-            CsvExportService csvExportService,
-            UserRepository userRepository,
-            PurchaseHistoryRepository purchaseHistoryRepository
-    ) {
-        this.purchaseHistoryService = purchaseHistoryService;
-        this.txtExportService = txtExportService;
-        this.pdfExportService = pdfExportService;
-        this.csvExportService = csvExportService;
-        this.userRepository = userRepository;
-        this.purchaseHistoryRepository = purchaseHistoryRepository;
-    }
+    private final UserService userService;
 
     public byte[] exportForCurrentUser(ExportFormat format) {
-        return buildExport(getCurrentUser(), format);
+        return buildExport(userService.getCurrentUser(), format);
     }
 
     public byte[] exportForAdmin(User user, ExportFormat format) {
@@ -71,14 +55,6 @@ public class PurchaseHistoryExportService {
         );
     }
 
-    private User getCurrentUser() {
-        Authentication auth =
-                SecurityContextHolder.getContext().getAuthentication();
-
-        return userRepository.findByEmail(auth.getName())
-                .orElseThrow(() -> new RuntimeException("User not found"));
-    }
-
     private byte[] buildExport(User user, ExportFormat format) {
         List<PurchaseHistoryExportDto> data =
                 purchaseHistoryService.getUserHistory(user)
@@ -104,7 +80,7 @@ public class PurchaseHistoryExportService {
             LocalDateTime start,
             LocalDateTime end,
             ExportFormat format) {
-        User user = getCurrentUser();
+        User user = userService.getCurrentUser();
 
         List<PurchaseHistoryExportDto> data =
                 purchaseHistoryService

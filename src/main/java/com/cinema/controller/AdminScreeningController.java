@@ -2,6 +2,7 @@ package com.cinema.controller;
 
 import com.cinema.model.Screening;
 import com.cinema.service.ScreeningService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,14 +10,11 @@ import java.time.LocalDateTime;
 import java.util.Map;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/admin/screenings")
 public class AdminScreeningController {
 
     private final ScreeningService screeningService;
-
-    public AdminScreeningController(ScreeningService screeningService) {
-        this.screeningService = screeningService;
-    }
 
     @PostMapping
     public ResponseEntity<Screening> createScreening(@RequestBody Map<String,Object> request){

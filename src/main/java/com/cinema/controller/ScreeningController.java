@@ -2,6 +2,7 @@ package com.cinema.controller;
 
 import com.cinema.model.Screening;
 import com.cinema.service.ScreeningService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,13 +11,10 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/screenings")
 public class ScreeningController {
     private final ScreeningService screeningService;
-
-    public ScreeningController(ScreeningService screeningService) {
-        this.screeningService = screeningService;
-    }
 
     @GetMapping
     public List<Screening> getAllScreenings() {

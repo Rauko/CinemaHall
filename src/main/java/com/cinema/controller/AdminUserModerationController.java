@@ -3,18 +3,16 @@ package com.cinema.controller;
 import com.cinema.model.User;
 import com.cinema.model.enums.UserStatus;
 import com.cinema.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/admin/users")
 public class AdminUserModerationController {
 
     private final UserRepository userRepository;
-
-    public AdminUserModerationController(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     @PatchMapping("/{id}/suspend")
     public ResponseEntity<User> suspend(@PathVariable long id){

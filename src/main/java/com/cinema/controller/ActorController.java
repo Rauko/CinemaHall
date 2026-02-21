@@ -2,20 +2,18 @@ package com.cinema.controller;
 
 import com.cinema.model.Actor;
 import com.cinema.service.ActorService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/actors")
 public class ActorController {
 
     private final ActorService actorService;
-
-    public ActorController(ActorService actorService) {
-        this.actorService = actorService;
-    }
 
     @GetMapping
     public List<Actor> findAll() {

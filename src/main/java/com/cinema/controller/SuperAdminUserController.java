@@ -4,18 +4,16 @@ import com.cinema.model.enums.Role;
 import com.cinema.model.User;
 import com.cinema.model.enums.UserStatus;
 import com.cinema.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/superadmin/users")
 public class SuperAdminUserController {
 
     private final UserRepository userRepository;
-
-    public SuperAdminUserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable long id) {

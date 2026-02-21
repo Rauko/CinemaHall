@@ -4,20 +4,17 @@ import com.cinema.model.Movie;
 import com.cinema.model.Screening;
 import com.cinema.repository.MovieRepository;
 import com.cinema.repository.ScreeningRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ScreeningService {
     private final ScreeningRepository screeningRepository;
     private final MovieRepository movieRepository;
-
-    public ScreeningService(ScreeningRepository screeningRepository, MovieRepository movieRepository) {
-        this.screeningRepository = screeningRepository;
-        this.movieRepository = movieRepository;
-    }
 
     public List<Screening> findAllScreenings() {
         return screeningRepository.findAll();

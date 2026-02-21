@@ -5,22 +5,19 @@ import com.cinema.model.enums.TicketStatus;
 import com.cinema.model.User;
 import com.cinema.repository.UserRepository;
 import com.cinema.service.TicketService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/admin/users")
 public class AdminUserController {
 
     private final UserRepository userRepository;
     private final TicketService ticketService;
-
-    public AdminUserController(UserRepository userRepository, TicketService ticketService) {
-        this.userRepository = userRepository;
-        this.ticketService = ticketService;
-    }
 
     @GetMapping
     public List<User> getAllUsers() {
