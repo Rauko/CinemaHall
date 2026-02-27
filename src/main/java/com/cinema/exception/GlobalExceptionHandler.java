@@ -32,4 +32,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity.internalServerError().body(response);
     }
 
+    @ExceptionHandler(BaseAppException.class)
+    public ResponseEntity<ErrorResponse> handleAppException(BaseAppException ex) {
+        ErrorResponse response = new ErrorResponse(
+                ex.getClass().getSimpleName(),
+                ex.getMessage(),
+                LocalDateTime.now()
+        );
+        return ResponseEntity.internalServerError().body(response);
+    }
+
 }
