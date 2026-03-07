@@ -28,10 +28,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleUnknown(Exception ex) {
         ErrorResponse response = new ErrorResponse(
                 "InternalError",
-                ex.getMessage(),
+                "Unexpected server error",
                 LocalDateTime.now()
         );
-        return ResponseEntity.internalServerError().body(response);
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(response);
     }
 
     @ExceptionHandler(BaseAppException.class)
@@ -41,7 +43,9 @@ public class GlobalExceptionHandler {
                 ex.getMessage(),
                 LocalDateTime.now()
         );
-        return ResponseEntity.internalServerError().body(response);
+        return ResponseEntity
+                .status(ex.getStatus())
+                .body(response);
     }
 
 }
