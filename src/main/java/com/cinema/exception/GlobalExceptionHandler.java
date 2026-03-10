@@ -1,5 +1,6 @@
 package com.cinema.exception;
 
+import com.cinema.model.enums.ErrorCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,7 +15,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handlePayment(PaymentException ex) {
 
         ErrorResponse response = new ErrorResponse(
-                "Payment Error",
+                ErrorCode.PAYMENT_FAILED,
                 ex.getMessage(),
                 LocalDateTime.now()
         );
@@ -27,7 +28,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleUnknown(Exception ex) {
         ErrorResponse response = new ErrorResponse(
-                "InternalError",
+                ErrorCode.INTERNAL_SERVER_ERROR,
                 "Unexpected server error",
                 LocalDateTime.now()
         );
@@ -39,7 +40,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BaseAppException.class)
     public ResponseEntity<ErrorResponse> handleAppException(BaseAppException ex) {
         ErrorResponse response = new ErrorResponse(
-                ex.getClass().getSimpleName(),
+                ex.getErrorCode(),
                 ex.getMessage(),
                 LocalDateTime.now()
         );
