@@ -1,7 +1,12 @@
 package com.cinema.exception;
 
-public class ReservationExpiredException extends RuntimeException {
-    public ReservationExpiredException(String message) {
-        super(message);
+import com.cinema.model.enums.ErrorCode;
+import org.springframework.http.HttpStatus;
+
+public class ReservationExpiredException extends BaseAppException {
+    public ReservationExpiredException() {
+        super("Reservation expired",
+                HttpStatus.CONFLICT,
+                ErrorCode.RESERVATION_EXPIRED);
     }
 }

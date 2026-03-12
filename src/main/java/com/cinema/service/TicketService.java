@@ -1,7 +1,9 @@
 package com.cinema.service;
 
 import com.cinema.dto.PaymentRequest;
+import com.cinema.exception.NoDefaultPaymentMethodException;
 import com.cinema.exception.PaymentException;
+import com.cinema.exception.PaymentFailedException;
 import com.cinema.exception.ReservationExpiredException;
 import com.cinema.model.*;
 import com.cinema.model.enums.*;
@@ -204,7 +206,7 @@ public class TicketService {
             history.setPaymentStatus(PaymentStatus.EXPIRED);
             purchaseHistoryRepository.save(history);
 
-            throw new ReservationExpiredException("Ticket reservation expired");
+            throw new ReservationExpiredException();
         }
 
         //payment itself - if failed - EXCEPTION and rollback
@@ -212,8 +214,7 @@ public class TicketService {
                 paymentMethodRepository
                         .findByUserAndIsDefaultTrue(user)
                         .orElseThrow(() ->
-                                new RuntimeException(
-                                        "No default payment method found for user"));
+                                new NoDefaultPaymentMethodException());
 
         try {
             paymentService.processPayment(
