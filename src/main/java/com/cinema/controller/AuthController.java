@@ -1,7 +1,8 @@
 package com.cinema.controller;
 
 import com.cinema.service.AuthService;
-import lombok.Data;
+import com.cinema.dto.RegisterRequest;
+import com.cinema.dto.LoginRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,24 +35,5 @@ public class AuthController {
                 request.getEmail(),
                 request.getPassword());
         return ResponseEntity.ok(token);
-    }
-
-    //DTO for registration
-    @Data
-    public class RegisterRequest {
-        private String name;
-        private String email;
-        private String password;
-    }
-
-    @Data
-    public class LoginRequest {
-        private String email;
-        private String password;
-    }
-
-    @Data
-    public class JwtResponse {
-        private final String token;
     }
 }
