@@ -1,8 +1,13 @@
 package com.cinema.exception;
 
-public class PaymentException extends RuntimeException {
+import com.cinema.model.enums.ErrorCode;
+import org.springframework.http.HttpStatus;
+
+public class PaymentException extends BaseAppException {
 
     public PaymentException(String message) {
-        super(message);
+        super(message,
+                HttpStatus.BAD_REQUEST,
+                ErrorCode.PAYMENT_FAILED);
     }
 }
