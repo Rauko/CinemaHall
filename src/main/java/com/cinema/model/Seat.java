@@ -2,9 +2,7 @@ package com.cinema.model;
 
 import com.cinema.model.enums.SeatType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(
@@ -14,9 +12,10 @@ import lombok.NoArgsConstructor;
         )
 
 )
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
-@AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = false)
 public class Seat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

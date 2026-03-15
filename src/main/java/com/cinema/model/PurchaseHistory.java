@@ -9,9 +9,10 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
-@AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = false)
 public class PurchaseHistory {
 
     @Id

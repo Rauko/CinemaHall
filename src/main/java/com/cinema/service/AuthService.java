@@ -2,6 +2,8 @@ package com.cinema.service;
 
 import com.cinema.config.JwtUtils;
 import com.cinema.model.User;
+import com.cinema.model.enums.Role;
+import com.cinema.model.enums.UserStatus;
 import com.cinema.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -40,6 +42,8 @@ public class AuthService {
         user.setName(name);
         user.setEmail(email);
         user.setPasswordHash(passwordEncoder.encode(password));
+        user.setRole(Role.USER);
+        user.setStatus(UserStatus.ACTIVE);
 
         userRepository.save(user);
 

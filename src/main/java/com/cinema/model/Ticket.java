@@ -3,9 +3,7 @@ package com.cinema.model;
 import com.cinema.model.enums.ImaxGlassesOption;
 import com.cinema.model.enums.TicketStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -14,9 +12,10 @@ import java.time.LocalDateTime;
         name = "tickets",
         uniqueConstraints = @UniqueConstraint(columnNames = {"screening_id", "seat_id"})
 )
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
-@AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = false)
 public class Ticket {
 
     @Id

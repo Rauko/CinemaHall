@@ -2,16 +2,15 @@ package com.cinema.model;
 
 import com.cinema.model.enums.PaymentMethodType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 
 @Entity
 @Table(name = "payment_methods")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
-@AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = false)
 public class PaymentMethod {
 
     @Id
