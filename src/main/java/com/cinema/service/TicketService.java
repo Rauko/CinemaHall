@@ -1,10 +1,7 @@
 package com.cinema.service;
 
 import com.cinema.dto.PaymentRequest;
-import com.cinema.exception.NoDefaultPaymentMethodException;
-import com.cinema.exception.PaymentException;
-import com.cinema.exception.PaymentFailedException;
-import com.cinema.exception.ReservationExpiredException;
+import com.cinema.exception.*;
 import com.cinema.model.*;
 import com.cinema.model.enums.*;
 import com.cinema.repository.*;
@@ -56,15 +53,18 @@ public class TicketService {
     // Admin Getters
 
     public List<Ticket> getTicketsByUserId(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userService.getUserById(userId);
         return ticketRepository.findByUser(user);
     }
 
     public List<Ticket> getTicketsByUserIdAndStatus(Long userId, TicketStatus status) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userService.getUserById(userId);
         return ticketRepository.findByUserAndStatus(user, status);
+    }
+
+    public Ticket getTicketById(Long ticketId){
+        return ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new TicketNotFoundException(ticketId));
     }
 
     // Create Ticket
@@ -130,17 +130,9 @@ public class TicketService {
     public Ticket cancelReservation(Long ticketId){
 
         User user = userService.getCurrentUser();
+        Ticket ticket = getTicketById(ticketId);
 
-        Ticket ticket = ticketRepository.findById(ticketId)
-                .orElseThrow(() -> new RuntimeException("Ticket not found"));
-
-        if (!ticket.getUser().getId().equals(user.getId())) {
-            throw new RuntimeException("You can cancel only YOUR OWN ticket");
-        }
-
-        if (ticket.getStatus() != TicketStatus.RESERVED) {
-            throw new RuntimeException("Only RESERVED tickets can be cancelled");
-        }
+        ticketCheck(ticket, user);
 
         ticket.setStatus(TicketStatus.CANCELLED);
 
@@ -173,17 +165,9 @@ public class TicketService {
     @Transactional // if exception - rollback
     public Ticket payForTicket(Long ticketId, PaymentRequest paymentRequest){
         User user = userService.getCurrentUser();
+        Ticket ticket = getTicketById(ticketId);
 
-        Ticket ticket = ticketRepository.findById(ticketId)
-                .orElseThrow(() -> new RuntimeException("Ticket not found"));
-
-        if (!ticket.getUser().getId().equals(user.getId())) {
-            throw new RuntimeException("You can pay for YOUR OWN ticket only");
-        }
-
-        if (ticket.getStatus() != TicketStatus.RESERVED) {
-            throw new RuntimeException("Only RESERVED tickets can be paid");
-        }
+        ticketCheck(ticket, user);
 
         PurchaseHistory history = new PurchaseHistory();
         history.setUser(user);
@@ -213,8 +197,7 @@ public class TicketService {
         PaymentMethod paymentMethod =
                 paymentMethodRepository
                         .findByUserAndIsDefaultTrue(user)
-                        .orElseThrow(() ->
-                                new NoDefaultPaymentMethodException());
+                        .orElseThrow(NoDefaultPaymentMethodException::new);
 
         try {
             paymentService.processPayment(
@@ -234,5 +217,16 @@ public class TicketService {
         ticket.setPurchaseTime(LocalDateTime.now());
 
         return ticketRepository.save(ticket);
+    }
+
+    private void ticketCheck(Ticket ticket, User user){
+
+        if (ticket.getUser().getId() != user.getId()) {
+            throw new RuntimeException("You can pay for YOUR OWN ticket only");
+        }
+
+        if (ticket.getStatus() != TicketStatus.RESERVED) {
+            throw new RuntimeException("Only RESERVED tickets can be paid");
+        }
     }
 }

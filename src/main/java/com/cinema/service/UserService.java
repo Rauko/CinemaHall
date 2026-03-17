@@ -1,5 +1,6 @@
 package com.cinema.service;
 
+import com.cinema.exception.UserNotFoundException;
 import com.cinema.model.User;
 import com.cinema.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,12 +18,12 @@ public class UserService {
 
     public User getUserById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
     }
 
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
     }
 
     public User getCurrentUser() {
@@ -34,7 +35,7 @@ public class UserService {
         }
 
         return userRepository.findByEmail(auth.getName())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
     }
 
     public User updateName(String newName) {

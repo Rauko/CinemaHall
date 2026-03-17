@@ -29,4 +29,5 @@ public interface TicketRepository  extends JpaRepository<Ticket, Long> {
             Long seatId,
             List<TicketStatus> statuses
     );
+
 }

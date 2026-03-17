@@ -8,11 +8,13 @@ import lombok.*;
 @Getter
 @Setter
 @NoArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = false)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Director {
 
-    @Id@GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
+    private Long id;
 
     private String name;
 }
