@@ -10,15 +10,15 @@ import lombok.*;
         uniqueConstraints = @UniqueConstraint(
                 columnNames = {"hall_id", "row_number", "seat_number"}
         )
-
 )
 @Getter
 @Setter
 @NoArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = false)
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Seat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Long id;
 
     @ManyToOne(optional = false)
