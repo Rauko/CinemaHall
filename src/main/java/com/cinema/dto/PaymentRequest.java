@@ -1,9 +1,11 @@
 package com.cinema.dto;
 
 import com.cinema.model.enums.PaymentMethodType;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class PaymentRequest {
 
     private PaymentMethodType method;

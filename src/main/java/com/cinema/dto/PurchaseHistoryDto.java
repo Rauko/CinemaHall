@@ -2,12 +2,12 @@ package com.cinema.dto;
 
 import com.cinema.model.PurchaseHistory;
 import com.cinema.model.enums.PurchaseActionType;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 public class PurchaseHistoryDto {
 
