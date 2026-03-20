@@ -1,7 +1,7 @@
 package com.cinema.controller;
 
 import com.cinema.dto.PaymentRequest;
-import com.cinema.dto.ticket.CreateTicketRequest;
+import com.cinema.dto.ticket.request.CreateTicketRequest;
 import com.cinema.model.Ticket;
 import com.cinema.service.TicketService;
 import lombok.RequiredArgsConstructor;
