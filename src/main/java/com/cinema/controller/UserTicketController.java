@@ -1,6 +1,8 @@
 package com.cinema.controller;
 
 import com.cinema.dto.PaymentRequest;
+import com.cinema.dto.ticket.TicketDto;
+import com.cinema.dto.ticket.mapper.TicketMapper;
 import com.cinema.dto.ticket.request.CreateTicketRequest;
 import com.cinema.model.Ticket;
 import com.cinema.service.TicketService;
@@ -19,37 +21,51 @@ public class UserTicketController {
 
     // My tickets
     @GetMapping
-    public List<Ticket> getMyTickets() {
-        return ticketService.getMyTickets();
+    public List<TicketDto> getMyTickets() {
+        return ticketService.getMyTickets()
+                .stream()
+                .map(TicketMapper::toDto)
+                .toList();
     }
 
     @GetMapping("/paid")
-    public List<Ticket> getPaidTickets() {
-        return ticketService.getMyPaidTickets();
+    public List<TicketDto> getPaidTickets() {
+        return ticketService.getMyPaidTickets()
+                .stream()
+                .map(TicketMapper::toDto)
+                .toList();
     }
 
     // Create
     @PostMapping
-    public ResponseEntity<Ticket> createTicket(@RequestBody CreateTicketRequest request) {
+    public ResponseEntity<TicketDto> createTicket(@RequestBody CreateTicketRequest request) {
         Ticket ticket = ticketService.createTicket(
                 request.getScreeningId(),
                 request.getSeatId(),
                 request.getGlassesOption()
         );
 
-        return ResponseEntity.ok(ticket);
+        return ResponseEntity.ok(TicketMapper.toDto(ticket));
     }
 
     // Cancel
     @PostMapping("/{ticketId}/cancel")
-    public ResponseEntity<Ticket> cancelTicket(@PathVariable Long ticketId) {
-        return ResponseEntity.ok(ticketService.cancelReservation(ticketId));
+    public ResponseEntity<TicketDto> cancelTicket(@PathVariable Long ticketId) {
+        return ResponseEntity.ok(
+                TicketMapper.toDto(
+                        ticketService.cancelReservation(ticketId)
+                )
+        );
     }
 
     // Pay
     @PostMapping("/{ticketId}/pay")
-    public ResponseEntity<Ticket> payForTicket(@PathVariable Long ticketId,
+    public ResponseEntity<TicketDto> payForTicket(@PathVariable Long ticketId,
                                             @RequestBody PaymentRequest request) {
-        return ResponseEntity.ok(ticketService.payForTicket(ticketId, request));
+        return ResponseEntity.ok(
+                TicketMapper.toDto(
+                        ticketService.payForTicket(ticketId, request)
+                )
+        );
     }
 }
