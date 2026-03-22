@@ -1,4 +1,4 @@
-package com.cinema.dto;
+package com.cinema.dto.payment.request;
 
 import com.cinema.model.enums.PaymentMethodType;
 import lombok.Getter;

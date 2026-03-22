@@ -1,6 +1,6 @@
 package com.cinema.service;
 
-import com.cinema.dto.PaymentRequest;
+import com.cinema.dto.payment.request.PaymentRequest;
 import com.cinema.exception.*;
 import com.cinema.model.*;
 import com.cinema.model.enums.*;

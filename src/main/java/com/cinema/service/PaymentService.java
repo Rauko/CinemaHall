@@ -1,6 +1,6 @@
 package com.cinema.service;
 
-import com.cinema.dto.BankPaymentRequest;
+import com.cinema.dto.payment.BankPaymentRequest;
 import com.cinema.exception.PaymentException;
 import com.cinema.integration.BankClient;
 import com.cinema.model.PaymentMethod;

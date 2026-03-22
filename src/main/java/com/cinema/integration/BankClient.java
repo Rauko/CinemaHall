@@ -1,6 +1,6 @@
 package com.cinema.integration;
 
-import com.cinema.dto.BankPaymentRequest;
+import com.cinema.dto.payment.BankPaymentRequest;
 import org.springframework.stereotype.Component;
 
 import java.util.Random;

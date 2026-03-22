@@ -1,6 +1,6 @@
 package com.cinema.controller;
 
-import com.cinema.dto.PaymentRequest;
+import com.cinema.dto.payment.request.PaymentRequest;
 import com.cinema.dto.ticket.TicketDto;
 import com.cinema.dto.ticket.mapper.TicketMapper;
 import com.cinema.dto.ticket.request.CreateTicketRequest;

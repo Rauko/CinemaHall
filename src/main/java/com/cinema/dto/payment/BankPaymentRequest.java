@@ -1,4 +1,4 @@
-package com.cinema.dto;
+package com.cinema.dto.payment;
 
 import lombok.Getter;
 import lombok.Setter;
