@@ -1,21 +1,10 @@
-package com.cinema.dto;
+package com.cinema.dto.screening.mapper;
 
+import com.cinema.dto.screening.ScreeningDto;
 import com.cinema.model.Screening;
 
-import java.time.LocalDateTime;
-
-public record ScreeningDto (
-        Long id,
-        LocalDateTime startTime,
-        int duration,
-
-        Long movieId,
-        String title,
-
-        Long hallId,
-        String hallName
-) {
-    public static ScreeningDto fromEntity(Screening screening) {
+public class ScreeningMapper {
+    public static ScreeningDto toDto(Screening screening) {
         return new ScreeningDto(
                 screening.getId(),
                 screening.getStartTime(),

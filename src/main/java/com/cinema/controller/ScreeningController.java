@@ -1,14 +1,15 @@
 package com.cinema.controller;
 
+import com.cinema.dto.screening.ScreeningDto;
+import com.cinema.dto.screening.mapper.ScreeningMapper;
+import com.cinema.dto.screening.request.CreateScreeningRequest;
 import com.cinema.model.Screening;
 import com.cinema.service.ScreeningService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -16,29 +17,36 @@ import java.util.Map;
 public class ScreeningController {
     private final ScreeningService screeningService;
 
-    @GetMapping
-    public List<Screening> getAllScreenings() {
-        return screeningService.findAllScreenings();
+    @GetMapping("/all")
+    public List<ScreeningDto> getAllScreenings() {
+        return screeningService.findAllScreenings()
+                .stream()
+                .map(ScreeningMapper::toDto)
+                .toList();
     }
 
     @GetMapping("/movie/{movieId}")
-    public List<Screening> getScreeningsByMovie(@PathVariable Long movieId) {
-        return screeningService.getScreeningsByMovie(movieId);
+    public List<ScreeningDto> getScreeningsByMovie(@PathVariable Long movieId) {
+        return screeningService.getScreeningsByMovie(movieId)
+                .stream()
+                .map(ScreeningMapper::toDto)
+                .toList();
     }
 
     @PostMapping
-    public ResponseEntity<Screening> createScreening(@RequestBody Map<String, Object> request) {
-        Long movieId = Long.valueOf(request.get("movieId").toString());
-        String hall = request.get("hallName").toString();
-        LocalDateTime date = LocalDateTime.parse(request.get("date").toString());
-        int duration = Integer.parseInt(request.get("duration").toString());
-        double price = Double.parseDouble(request.get("price").toString());
+    public ResponseEntity<ScreeningDto> createScreening(
+            @RequestBody CreateScreeningRequest request) {
 
-        Screening screening = screeningService.addScreening(movieId, hall, date, duration, price);
-        return ResponseEntity.ok(screening);
+        Screening screening = screeningService.addScreening(
+                request.getMovieId(),
+                request.getHallName(),
+                request.getStartTime(),
+                request.getDuration(),
+                request.getPrice());
+        return ResponseEntity.ok(ScreeningMapper.toDto(screening));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteScreening(@PathVariable Long id) {
         screeningService.deleteScreening(id);
         return ResponseEntity.noContent().build();
