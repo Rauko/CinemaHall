@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Entity
 @Table(name = "Actors")
@@ -24,5 +25,5 @@ public class Actor {
 
     private String biography;
 
-
+    private Set<Movie> movies;
 }

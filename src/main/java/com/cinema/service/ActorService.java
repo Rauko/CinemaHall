@@ -1,5 +1,6 @@
 package com.cinema.service;
 
+import com.cinema.dto.actor.request.CreateActorRequest;
 import com.cinema.model.Actor;
 import com.cinema.repository.ActorRepository;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,15 @@ public class ActorService {
 
     public ActorService(ActorRepository actorRepository) {
         this.actorRepository = actorRepository;
+    }
+
+    public Actor createActor(CreateActorRequest request){
+        Actor actor = new Actor();
+        actor.setName(request.getName());
+        actor.setBirthDate(request.getBirthDate());
+        actor.setBiography(request.getBiography());
+
+        return actorRepository.save(actor);
     }
 
     public List<Actor> getAllActors() {
