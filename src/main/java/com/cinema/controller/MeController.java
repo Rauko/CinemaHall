@@ -2,6 +2,7 @@ package com.cinema.controller;
 
 import com.cinema.dto.PurchaseHistoryDto;
 import com.cinema.dto.ticket.TicketDto;
+import com.cinema.dto.ticket.mapper.TicketMapper;
 import com.cinema.model.enums.ExportFormat;
 import com.cinema.model.enums.TicketStatus;
 import com.cinema.model.User;
@@ -34,7 +35,7 @@ public class MeController {
     public List<TicketDto> myTickets() {
         return ticketService.getMyTickets()
                 .stream()
-                .map(TicketDto::fromEntity)
+                .map(TicketMapper::toDto)
                 .toList();
     }
 
@@ -42,7 +43,7 @@ public class MeController {
     public List<TicketDto> myPaidTickets() {
         return ticketService.getMyPaidTickets()
                 .stream()
-                .map(TicketDto::fromEntity)
+                .map(TicketMapper::toDto)
                 .toList();
     }
 
@@ -50,7 +51,7 @@ public class MeController {
     public List<TicketDto> myReservedTickets() {
         return ticketService.getMyTicketsByStatus(TicketStatus.RESERVED)
                 .stream()
-                .map(TicketDto::fromEntity)
+                .map(TicketMapper::toDto)
                 .toList();
     }
 
