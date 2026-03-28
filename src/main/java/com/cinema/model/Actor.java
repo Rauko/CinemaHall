@@ -25,5 +25,6 @@ public class Actor {
 
     private String biography;
 
+    @ManyToMany(mappedBy = "actors")
     private Set<Movie> movies;
 }
