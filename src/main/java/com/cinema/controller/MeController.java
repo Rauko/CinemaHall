@@ -1,6 +1,7 @@
 package com.cinema.controller;
 
-import com.cinema.dto.PurchaseHistoryDto;
+import com.cinema.dto.purchase.PurchaseHistoryDto;
+import com.cinema.dto.purchase.mapper.PurchaseHistoryMapper;
 import com.cinema.dto.ticket.TicketDto;
 import com.cinema.dto.ticket.mapper.TicketMapper;
 import com.cinema.model.enums.ExportFormat;
@@ -60,7 +61,7 @@ public class MeController {
         User currentUser = userService.getCurrentUser();
         return purchaseHistoryService.getUserHistory(currentUser)
                 .stream()
-                .map(PurchaseHistoryDto::fromEntity)
+                .map(PurchaseHistoryMapper::toDto)
                 .toList();
 
     }
@@ -92,7 +93,7 @@ public class MeController {
         return purchaseHistoryService
                 .getHistoryForPeriod(startDate, endDate)
                 .stream()
-                .map(PurchaseHistoryDto::fromEntity)
+                .map(PurchaseHistoryMapper::toDto)
                 .toList();
     }
 
