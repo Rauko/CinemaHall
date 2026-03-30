@@ -33,5 +33,6 @@ public class PurchaseHistory {
 
     private LocalDateTime purchaseTime;
 
+    @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
 }
