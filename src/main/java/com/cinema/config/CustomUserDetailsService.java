@@ -1,8 +1,10 @@
 package com.cinema.config;
 
+import com.cinema.exception.UserBannedException;
+import com.cinema.exception.UserSuspendedException;
 import com.cinema.model.User;
 import com.cinema.model.enums.UserStatus;
-import com.cinema.repository.UserRepository;
+import com.cinema.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,24 +15,22 @@ import java.util.Collections;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Autowired
-    public CustomUserDetailsService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public CustomUserDetailsService(UserService userService) {
+        this.userService = userService;
     }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() ->new UsernameNotFoundException("User not found. Email "
-                        + email + " don't exist in system."));
+        User user = userService.getUserByEmail(email);
 
         if (user.getStatus() == UserStatus.BANNED) {
-            throw new RuntimeException("User is banned.");
+            throw new UserBannedException(user.getEmail());
         }
         if (user.getStatus() == UserStatus.SUSPENDED) {
-            throw new RuntimeException("User is suspended.");
+            throw new UserSuspendedException(user.getEmail());
         }
 
         return new org.springframework.security.core.userdetails.User(

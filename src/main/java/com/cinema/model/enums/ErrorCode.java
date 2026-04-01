@@ -3,6 +3,8 @@ package com.cinema.model.enums;
 public enum ErrorCode {
     USER_NOT_FOUND,
     USER_ALREADY_EXIST,
+    USER_BANNED,
+    USER_SUSPENDED,
 
     TICKET_NOT_FOUND,
     TICKET_ALREADY_EXIST,
