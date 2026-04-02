@@ -1,8 +1,13 @@
 package com.cinema.service;
 
+import com.cinema.dto.RegisterRequest;
+import com.cinema.exception.EmailAlreadyExistsException;
+import com.cinema.exception.EmailBelongsToBannedUserException;
 import com.cinema.exception.UserNotFoundException;
 import com.cinema.model.User;
+import com.cinema.model.enums.UserStatus;
 import com.cinema.repository.UserRepository;
+import com.cinema.util.EmailNormalizer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -10,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -40,8 +46,7 @@ public class UserService {
             throw new RuntimeException("No authenticated user");
         }
 
-        return userRepository.findByEmail(auth.getName())
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
+        return getUserByEmail(auth.getName());
     }
 
     public User updateName(String newName) {
@@ -61,4 +66,28 @@ public class UserService {
         user.setPasswordHash(passwordEncoder.encode(newPassword));
         return userRepository.save(user);
     }
+
+    public void deleteUser(Long id) {
+        userRepository.deleteById(id);
+    }
+
+    public User register(RegisterRequest request) {
+        String normalizedEmail = EmailNormalizer.normalize(request.getEmail());
+
+        if(userRepository.findByEmail(normalizedEmail).isPresent()) {
+            if (userRepository.findByEmail(normalizedEmail).get().getStatus() == UserStatus.BANNED) {
+                throw new EmailBelongsToBannedUserException(
+                        userRepository.findByEmail(normalizedEmail).get().getEmail());
+            } else throw new EmailAlreadyExistsException();
+        }
+
+        User user = new User();
+        user.setEmail(normalizedEmail);
+        user.setName(request.getName());
+        user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
+        user.setStatus(UserStatus.ACTIVE);
+
+        return userRepository.save(user);
+    }
+
 }
