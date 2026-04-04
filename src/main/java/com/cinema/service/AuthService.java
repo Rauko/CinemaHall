@@ -1,6 +1,7 @@
 package com.cinema.service;
 
 import com.cinema.config.JwtUtils;
+import com.cinema.exception.EmailAlreadyExistsException;
 import com.cinema.model.User;
 import com.cinema.model.enums.Role;
 import com.cinema.model.enums.UserStatus;
@@ -35,7 +36,7 @@ public class AuthService {
     //new user registration
     public String register(String name, String email, String password) {
         if(userRepository.existsByEmail(email)){
-            throw new RuntimeException("Email already exists");
+            throw new EmailAlreadyExistsException();
         }
 
         User user = new User();

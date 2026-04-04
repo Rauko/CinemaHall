@@ -2,12 +2,11 @@ package com.cinema.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.Id;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "blocked_email")
+@Table(name = "blocked_emails")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -22,5 +21,6 @@ public class BlockedEmail {
 
     private String reason;
 
-    private LocalDateTime blockedDate;
+    @Column(name = "blocked_at")
+    private LocalDateTime blockedAt;
 }

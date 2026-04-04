@@ -3,6 +3,7 @@ package com.cinema.controller;
 import com.cinema.model.User;
 import com.cinema.model.enums.UserStatus;
 import com.cinema.repository.UserRepository;
+import com.cinema.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,30 +13,27 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/admin/users")
 public class AdminUserModerationController {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @PatchMapping("/{id}/suspend")
     public ResponseEntity<User> suspend(@PathVariable long id){
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userService.getUserById(id);
 
         user.setStatus(UserStatus.SUSPENDED);
-        return ResponseEntity.ok(userRepository.save(user));
+        return ResponseEntity.ok(user);
     }
 
     @PatchMapping("/{id}/ban")
     public ResponseEntity<User> ban(@PathVariable long id){
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userService.getUserById(id);
 
         user.setStatus(UserStatus.BANNED);
-        return ResponseEntity.ok(userRepository.save(user));
+        return ResponseEntity.ok(user);
     }
 
     @PatchMapping("/{id}/unsuspend")
     public ResponseEntity<User> unsuspend(@PathVariable long id){
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userService.getUserById(id);
 
         if(user.getStatus() == UserStatus.ACTIVE){
             throw new RuntimeException("User is Active");
@@ -45,13 +43,12 @@ public class AdminUserModerationController {
         }
 
         user.setStatus(UserStatus.ACTIVE);
-        return ResponseEntity.ok(userRepository.save(user));
+        return ResponseEntity.ok(user);
     }
 
     @PatchMapping("/{id}/unban")
     public ResponseEntity<User> unban(@PathVariable long id){
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userService.getUserById(id);
 
         if(user.getStatus() == UserStatus.ACTIVE){
             throw new RuntimeException("User is Active");
@@ -61,6 +58,6 @@ public class AdminUserModerationController {
         }
 
         user.setStatus(UserStatus.ACTIVE);
-        return ResponseEntity.ok(userRepository.save(user));
+        return ResponseEntity.ok(user);
     }
 }

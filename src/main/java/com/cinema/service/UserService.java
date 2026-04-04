@@ -53,6 +53,7 @@ public class UserService {
         return getUserByEmail(auth.getName());
     }
 
+
     public User updateName(String newName) {
         User user = getCurrentUser();
         user.setName(newName);
@@ -105,7 +106,7 @@ public class UserService {
             BlockedEmail blockedEmail = new BlockedEmail();
             blockedEmail.setEmail(normalizedEmail);
             blockedEmail.setReason(reason);
-            blockedEmail.setBlockedDate(LocalDateTime.now());
+            blockedEmail.setBlockedAt(LocalDateTime.now());
 
             blockedEmailRepository.save(blockedEmail);
         }
