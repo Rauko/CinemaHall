@@ -3,6 +3,7 @@ package com.cinema.service;
 import com.cinema.dto.RegisterRequest;
 import com.cinema.exception.EmailAlreadyExistsException;
 import com.cinema.exception.EmailBelongsToBannedUserException;
+import com.cinema.exception.UnauthenticatedException;
 import com.cinema.exception.UserNotFoundException;
 import com.cinema.model.BlockedEmail;
 import com.cinema.model.User;
@@ -47,7 +48,7 @@ public class UserService {
                 SecurityContextHolder.getContext().getAuthentication();
 
         if (auth == null) {
-            throw new RuntimeException("No authenticated user");
+            throw new UnauthenticatedException();
         }
 
         return getUserByEmail(auth.getName());
