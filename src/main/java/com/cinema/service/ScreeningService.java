@@ -2,7 +2,6 @@ package com.cinema.service;
 
 import com.cinema.model.Movie;
 import com.cinema.model.Screening;
-import com.cinema.repository.MovieRepository;
 import com.cinema.repository.ScreeningRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,15 +13,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ScreeningService {
     private final ScreeningRepository screeningRepository;
-    private final MovieRepository movieRepository;
+    private final MovieService movieService;
 
     public List<Screening> findAllScreenings() {
         return screeningRepository.findAll();
     }
 
     public List<Screening> getScreeningsByMovie(Long movieId) {
-        Movie movie = movieRepository.findById(movieId)
-                .orElseThrow(() -> new RuntimeException("Movie not found"));
+        Movie movie = movieService.getMovieById(movieId);
         return screeningRepository.findByMovie(movie);
     }
 
@@ -31,8 +29,7 @@ public class ScreeningService {
                                   LocalDateTime startTime,
                                   int duration,
                                   double price) {
-        Movie movie = movieRepository.findById(movieId)
-                .orElseThrow(() -> new RuntimeException("Movie not found"));
+        Movie movie = movieService.getMovieById(movieId);
 
         Screening screening = new Screening();
         screening.setMovie(movie);

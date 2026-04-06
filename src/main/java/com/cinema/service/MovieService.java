@@ -2,6 +2,7 @@ package com.cinema.service;
 
 import com.cinema.dto.movie.request.CreateMovieRequest;
 import com.cinema.dto.movie.request.UpdateMovieRequest;
+import com.cinema.exception.MovieNotFoundException;
 import com.cinema.model.Movie;
 import com.cinema.repository.MovieRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ public class MovieService {
 
     public Movie getMovieById(Long id){
         return movieRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Movie not found"));
+                .orElseThrow(() -> new MovieNotFoundException(id));
     }
 
     public Movie createMovie(CreateMovieRequest request) {
