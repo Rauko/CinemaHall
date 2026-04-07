@@ -1,6 +1,8 @@
 package com.cinema.service.export;
 
 import com.cinema.dto.export.PurchaseHistoryExportDto;
+import com.cinema.exception.ExportFailedException;
+import com.cinema.model.enums.ExportFormat;
 import com.lowagie.text.Document;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfWriter;
@@ -37,7 +39,7 @@ public class PdfExportService {
                 document.add(new Paragraph("----------------"));
             }
         } catch (Exception e) {
-            throw new RuntimeException("PDF export failed", e);
+            throw new ExportFailedException(ExportFormat.PDF);
         } finally {
             document.close();
         }
