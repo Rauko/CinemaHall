@@ -1,5 +1,6 @@
 package com.cinema.util;
 
+import com.cinema.exception.AccessDeniedException;
 import com.cinema.model.User;
 import com.cinema.model.enums.Role;
 import org.springframework.security.core.Authentication;
@@ -13,9 +14,8 @@ public class LoginLevelCheckUtil {
     }
 
     private static void requireAdminOrSuperAdmin(User currentUser) {
-        if(currentUser.getRole() != Role.ADMIN ||
-                currentUser.getRole() != Role.SUPER_ADMIN) {
-            throw new RuntimeException("Access denied");
+        if(currentUser.getRole() != Role.ADMIN && currentUser.getRole() != Role.SUPER_ADMIN) {
+            throw new AccessDeniedException();
         }
     }
 
