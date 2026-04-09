@@ -1,5 +1,7 @@
 package com.cinema.util;
 
+import com.cinema.exception.InvalidDateFormatException;
+
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
@@ -11,17 +13,17 @@ public class DateParseUtil {
                     .toLocalDate()
                     .atStartOfDay();
         } catch (DateTimeParseException e) {
-            throw new RuntimeException("Invalid start date format");
+            throw new InvalidDateFormatException("start");
         }
     }
 
-    public static LocalDateTime parseEndDate(String start){
+    public static LocalDateTime parseEndDate(String end){
         try {
-            return LocalDateTime.parse(start)
+            return LocalDateTime.parse(end)
                     .toLocalDate()
                     .atTime(LocalTime.MAX);
         } catch (DateTimeParseException e) {
-            throw new RuntimeException("Invalid end date format");
+            throw new InvalidDateFormatException("end");
         }
     }
 }

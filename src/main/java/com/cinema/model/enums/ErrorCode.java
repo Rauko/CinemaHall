@@ -24,6 +24,7 @@ public enum ErrorCode {
     UNAUTHENTICATED,
 
     INTERNAL_SERVER_ERROR,
+    INVALID_DATE_FORMAT,
 
     EXPORT_FAILED
 }
