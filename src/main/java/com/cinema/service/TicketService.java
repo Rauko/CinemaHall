@@ -75,7 +75,7 @@ public class TicketService {
         User user = userService.getCurrentUser();
 
         Screening screening = screeningRepository.findById(screeningId)
-                .orElseThrow(() -> new RuntimeException("Screening not found"));
+                .orElseThrow(() -> new ScreeningNotFoundException(screeningId));
 
         Seat seat = seatRepository.findById(seatId)
                 .orElseThrow(() -> new RuntimeException("Seat not found"));

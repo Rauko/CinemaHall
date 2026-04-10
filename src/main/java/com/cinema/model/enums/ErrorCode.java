@@ -26,5 +26,7 @@ public enum ErrorCode {
     INTERNAL_SERVER_ERROR,
     INVALID_DATE_FORMAT,
 
+    SCREENING_NOT_FOUND,
+
     EXPORT_FAILED
 }
