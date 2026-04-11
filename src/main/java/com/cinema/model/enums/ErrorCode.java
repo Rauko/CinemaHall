@@ -28,5 +28,7 @@ public enum ErrorCode {
 
     SCREENING_NOT_FOUND,
 
+    SEAT_NOT_FOUND,
+
     EXPORT_FAILED
 }
