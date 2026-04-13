@@ -1,8 +1,8 @@
 package com.cinema.controller;
 
+import com.cinema.exception.InvalidUserStatusException;
 import com.cinema.model.User;
 import com.cinema.model.enums.UserStatus;
-import com.cinema.repository.UserRepository;
 import com.cinema.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +16,7 @@ public class AdminUserModerationController {
     private final UserService userService;
 
     @PatchMapping("/{id}/suspend")
-    public ResponseEntity<User> suspend(@PathVariable long id){
+    public ResponseEntity<User> suspend(@PathVariable Long id){
         User user = userService.getUserById(id);
 
         user.setStatus(UserStatus.SUSPENDED);
@@ -24,7 +24,7 @@ public class AdminUserModerationController {
     }
 
     @PatchMapping("/{id}/ban")
-    public ResponseEntity<User> ban(@PathVariable long id){
+    public ResponseEntity<User> ban(@PathVariable Long id){
         User user = userService.getUserById(id);
 
         user.setStatus(UserStatus.BANNED);
@@ -32,14 +32,14 @@ public class AdminUserModerationController {
     }
 
     @PatchMapping("/{id}/unsuspend")
-    public ResponseEntity<User> unsuspend(@PathVariable long id){
+    public ResponseEntity<User> unsuspend(@PathVariable Long id){
         User user = userService.getUserById(id);
 
         if(user.getStatus() == UserStatus.ACTIVE){
-            throw new RuntimeException("User is Active");
+            throw new InvalidUserStatusException(id, UserStatus.SUSPENDED);
         }
         if(user.getStatus() == UserStatus.BANNED){
-            throw new RuntimeException("User is Banned");
+            throw new InvalidUserStatusException(id, UserStatus.SUSPENDED);
         }
 
         user.setStatus(UserStatus.ACTIVE);
@@ -47,14 +47,14 @@ public class AdminUserModerationController {
     }
 
     @PatchMapping("/{id}/unban")
-    public ResponseEntity<User> unban(@PathVariable long id){
+    public ResponseEntity<User> unban(@PathVariable Long id){
         User user = userService.getUserById(id);
 
         if(user.getStatus() == UserStatus.ACTIVE){
-            throw new RuntimeException("User is Active");
+            throw new InvalidUserStatusException(id, UserStatus.BANNED);
         }
         if(user.getStatus() == UserStatus.SUSPENDED){
-            throw new RuntimeException("User is Suspended");
+            throw new InvalidUserStatusException(id, UserStatus.BANNED);
         }
 
         user.setStatus(UserStatus.ACTIVE);
