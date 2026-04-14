@@ -81,7 +81,7 @@ public class TicketService {
                 .orElseThrow(() -> new SeatNotFoundException(seatId));
 
         if (!seat.getHall().getId().equals(screening.getHall().getId())) {
-            throw new RuntimeException("Seat does not belong to screening hall");
+            throw new SeatScreeningMismatchException(seatId);
         }
 
         boolean taken = ticketRepository.existsByScreeningIdAndSeatIdAndStatusIn(

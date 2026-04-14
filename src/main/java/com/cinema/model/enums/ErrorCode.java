@@ -28,6 +28,7 @@ public enum ErrorCode {
     SCREENING_NOT_FOUND,
 
     SEAT_NOT_FOUND,
+    SEAT_BELONGS_TO_ANOTHER_HALL,
 
     EXPORT_FAILED
 }
