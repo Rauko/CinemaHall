@@ -29,6 +29,7 @@ public enum ErrorCode {
 
     SEAT_NOT_FOUND,
     SEAT_BELONGS_TO_ANOTHER_HALL,
+    SEAT_ALREADY_TAKEN,
 
     EXPORT_FAILED
 }

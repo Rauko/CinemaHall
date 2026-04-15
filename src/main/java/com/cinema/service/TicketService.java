@@ -91,7 +91,7 @@ public class TicketService {
 
 
         if (taken) {
-            throw new RuntimeException("Seat already taken");
+            throw new SeatAlreadyTakenException(seatId);
         }
 
         Ticket ticket = new Ticket();
