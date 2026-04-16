@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -221,12 +222,12 @@ public class TicketService {
 
     private void ticketCheck(Ticket ticket, User user){
 
-        if (ticket.getUser().getId() != user.getId()) {
-            throw new RuntimeException("You can pay for YOUR OWN ticket only");
+        if (!Objects.equals(ticket.getUser().getId(), user.getId())) {
+            throw new AppAccessDeniedException("You can pay for YOUR OWN ticket only");
         }
 
         if (ticket.getStatus() != TicketStatus.RESERVED) {
-            throw new RuntimeException("Only RESERVED tickets can be paid");
+            throw new InvalidTicketStateException("Only RESERVED tickets can be paid");
         }
     }
 }
