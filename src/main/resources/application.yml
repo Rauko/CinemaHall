@@ -24,3 +24,11 @@ spring:
 
 ticket:
   reservation-expiration-minutes: 10
+
+logging:
+  file:
+    name: logs/app.log
+
+level:
+  root: INFO
+  com.cinema: DEBUG
