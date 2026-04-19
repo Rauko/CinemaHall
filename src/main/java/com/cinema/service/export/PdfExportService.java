@@ -6,6 +6,8 @@ import com.cinema.model.enums.ExportFormat;
 import com.lowagie.text.Document;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.pdf.PdfWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
@@ -13,6 +15,9 @@ import java.util.List;
 
 @Service
 public class PdfExportService {
+
+    private static final Logger log = LoggerFactory.getLogger(PdfExportService.class);
+
     public byte[] export(List<PurchaseHistoryExportDto> data) {
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -39,6 +44,14 @@ public class PdfExportService {
                 document.add(new Paragraph("----------------"));
             }
         } catch (Exception e) {
+
+            log.error("PDF export failed: format={}, recordsCount={}, message={}",
+                    ExportFormat.PDF,
+                    data != null ? data.size() : 0,
+                    e.getMessage(),
+                    e
+            );
+
             throw new ExportFailedException(ExportFormat.PDF);
         } finally {
             document.close();
