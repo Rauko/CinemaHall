@@ -20,43 +20,56 @@ public class PdfExportService {
 
     public byte[] export(List<PurchaseHistoryExportDto> data) {
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        Document document = new Document();
+        if (data == null) {
+            log.warn("PDF export called with null data");
+            data = List.of();
+        }
 
-        try {
-            PdfWriter.getInstance(document, out);
-            document.open();
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
 
-            document.add(new Paragraph("Purchase History"));
-            document.add(new Paragraph("================"));
+            Document document = new Document();
 
-            for (PurchaseHistoryExportDto d : data) {
-                document.add(new Paragraph(
-                        String.format(
-                                "Movie: %s\nHall: %s\nSeat: %s\nPrice: %s\nTime: %s\n",
-                                d.movieTitle(),
-                                d.hallName(),
-                                d.seat(),
-                                d.price(),
-                                d.purchaseTime()
-                        )
-                ));
-                document.add(new Paragraph("----------------"));
+            try {
+                PdfWriter.getInstance(document, out);
+                document.open();
+
+                log.info("Starting PDF export: recordsCount={}", data.size());
+
+                document.add(new Paragraph("Purchase History"));
+                document.add(new Paragraph("================"));
+
+                for (PurchaseHistoryExportDto d : data) {
+                    document.add(new Paragraph(
+                            String.format(
+                                    "Movie: %s\nHall: %s\nSeat: %s\nPrice: %s\nTime: %s\n",
+                                    d.movieTitle(),
+                                    d.hallName(),
+                                    d.seat(),
+                                    d.price(),
+                                    d.purchaseTime()
+                            )
+                    ));
+                    document.add(new Paragraph("----------------"));
+                }
+
+                log.info("PDF export successful: recordsCount={}", data.size());
+
+            } finally {
+                document.close(); // Document не AutoCloseable ❗
             }
+
+            return out.toByteArray();
+
         } catch (Exception e) {
 
             log.error("PDF export failed: format={}, recordsCount={}, message={}",
                     ExportFormat.PDF,
-                    data != null ? data.size() : 0,
+                    data.size(),
                     e.getMessage(),
                     e
             );
 
             throw new ExportFailedException(ExportFormat.PDF);
-        } finally {
-            document.close();
         }
-
-        return out.toByteArray();
     }
 }
