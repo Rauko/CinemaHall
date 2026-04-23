@@ -31,5 +31,7 @@ public enum ErrorCode {
     SEAT_BELONGS_TO_ANOTHER_HALL,
     SEAT_ALREADY_TAKEN,
 
+    ACTOR_NOT_FOUND,
+
     EXPORT_FAILED
 }
