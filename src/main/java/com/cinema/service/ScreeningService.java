@@ -1,5 +1,6 @@
 package com.cinema.service;
 
+import com.cinema.exception.ScreeningNotFoundException;
 import com.cinema.model.Movie;
 import com.cinema.model.Screening;
 import com.cinema.repository.ScreeningRepository;
@@ -62,6 +63,17 @@ public class ScreeningService {
     }
 
     public void deleteScreening(Long id) {
-        screeningRepository.deleteById(id);
+        Screening screening = screeningRepository.findById(id)
+                .orElseThrow(() -> new ScreeningNotFoundException(id));
+
+        log.info("Deleting screening: id={}, movieId={}, hallName={}",
+                screening.getId(),
+                screening.getMovie().getId(),
+                screening.getHallName()
+        );
+
+        screeningRepository.delete(screening);
+
+        log.info("Screening deleted: id={}", id);
     }
 }
