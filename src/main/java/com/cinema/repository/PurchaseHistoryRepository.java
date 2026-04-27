@@ -31,4 +31,15 @@ public interface PurchaseHistoryRepository
             @Param("start") LocalDateTime start,
             @Param("end") LocalDateTime end
     );
+
+    @Query("""
+       SELECT COALESCE(SUM(p.amount), 0)
+       FROM PurchaseHistory p
+       WHERE p.user = :user
+         AND p.action = com.cinema.model.enums.PurchaseActionType.PURCHASE
+         AND p.purchaseTime BETWEEN :start AND :end
+       """)
+    double sumPurchasesBetweenForUser(User user,
+                                    LocalDateTime start,
+                                    LocalDateTime end);
 }

@@ -79,7 +79,7 @@ public class PurchaseHistoryService {
                                                      LocalDateTime end) {
         User user = userService.getCurrentUser();
 
-        log.info("Fetching current user purchase history for period: userId={}, start={}, end={}",
+        log.info("Fetching general purchase history for period: userId={}, start={}, end={}",
                 user.getId(),
                 start,
                 end
@@ -115,7 +115,9 @@ public class PurchaseHistoryService {
         LocalDate start = LocalDate.of(year, month, 1);
         LocalDate end = start.withDayOfMonth(start.lengthOfMonth());
 
-        log.info("Calculating monthly revenue: year={}, month={}", year, month);
+        log.info("Calculating monthly revenue: year={}, month={}",
+                year,
+                month);
         log.debug("Monthly revenue period: start={}, end={}",
                 start.atStartOfDay(),
                 end.atTime(LocalTime.MAX)
@@ -124,6 +126,54 @@ public class PurchaseHistoryService {
         return repository.sumRevenueBetween(
                 start.atStartOfDay(),
                 end.atTime(LocalTime.MAX)
+        );
+    }
+
+    public double getPurchasesForMonthForCurrentUser(int year, int month) {
+        User currentUser = userService.getCurrentUser();
+
+        LocalDate start = LocalDate.of(year, month, 1);
+        LocalDate end = start.withDayOfMonth(start.lengthOfMonth());
+
+        log.info("User {}. Calculating monthly revenue: year={}, month={}",
+                currentUser.getId(),
+                year,
+                month
+        );
+        log.debug("User {}. Monthly revenue period: start={}, end={}",
+                currentUser.getId(),
+                start.atStartOfDay(),
+                end.atTime(LocalTime.MAX)
+        );
+
+        return repository.sumPurchasesBetweenForUser(
+                currentUser,
+                start.atStartOfDay(),
+                end.atTime(LocalTime.MAX)
+        );
+    }
+
+    public double getPurchasesForDayForCurrentUser(LocalDate date) {
+
+        User currentUser = userService.getCurrentUser();
+
+        LocalDateTime start = date.atStartOfDay();
+        LocalDateTime end = date.atTime(LocalTime.MAX);
+
+        log.info("User {}. Calculating daily revenue for date={}",
+                currentUser,
+                date
+                ;
+        log.debug("User {}. Daily revenue period: start={}, end={}",
+                currentUser,
+                start,
+                end
+        );
+
+        return repository.sumPurchasesBetweenForUser(
+                currentUser,
+                start,
+                end
         );
     }
 }
