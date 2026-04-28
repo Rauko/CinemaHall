@@ -163,7 +163,7 @@ public class PurchaseHistoryService {
         log.info("User {}. Calculating daily revenue for date={}",
                 currentUser,
                 date
-                ;
+        );
         log.debug("User {}. Daily revenue period: start={}, end={}",
                 currentUser,
                 start,
