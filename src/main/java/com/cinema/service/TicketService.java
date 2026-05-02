@@ -7,6 +7,8 @@ import com.cinema.model.enums.*;
 import com.cinema.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -19,8 +21,9 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class TicketService {
 
+    private static final Logger log = LoggerFactory.getLogger(TicketService.class);
+
     private final TicketRepository ticketRepository;
-    private final UserRepository userRepository;
     private final SeatRepository seatRepository;
     private final ScreeningRepository screeningRepository;
     private final PaymentService paymentService;
@@ -75,6 +78,12 @@ public class TicketService {
                                ImaxGlassesOption glassesOption){
         User user = userService.getCurrentUser();
 
+        log.info("Creating reservation: userId={}, screeningId={}, seatId={}",
+                user.getId(),
+                screeningId,
+                seatId
+        );
+
         Screening screening = screeningRepository.findById(screeningId)
                 .orElseThrow(() -> new ScreeningNotFoundException(screeningId));
 
@@ -82,6 +91,13 @@ public class TicketService {
                 .orElseThrow(() -> new SeatNotFoundException(seatId));
 
         if (!seat.getHall().getId().equals(screening.getHall().getId())) {
+
+            log.warn("Seat/screening mismatch: userId={}, screeningId={}, seatId={}",
+                    user.getId(),
+                    screeningId,
+                    seatId
+            );
+
             throw new SeatScreeningMismatchException(seatId);
         }
 
@@ -92,6 +108,13 @@ public class TicketService {
 
 
         if (taken) {
+
+            log.warn("Seat already taken: userId={}, screeningId={}, seatId={}",
+                    user.getId(),
+                    screeningId,
+                    seatId
+            );
+
             throw new SeatAlreadyTakenException(seatId);
         }
 
@@ -123,7 +146,17 @@ public class TicketService {
         ticket.setStatus(TicketStatus.RESERVED);
         ticket.setReservedAt(java.time.LocalDateTime.now());
 
-        return ticketRepository.save(ticket);
+        ticketRepository.save(ticket);
+
+        log.info("Reservation created: ticketId={}, userId={}, screeningId={}, seatId={}, price={}",
+                ticket.getId(),
+                user.getId(),
+                screeningId,
+                seatId,
+                ticket.getPrice()
+        );
+
+        return ticket;
     }
 
     // Cancel Reservation
@@ -131,13 +164,26 @@ public class TicketService {
     public Ticket cancelReservation(Long ticketId){
 
         User user = userService.getCurrentUser();
+
+        log.info("Cancelling reservation: ticketId={}, userId={}",
+                ticketId,
+                user.getId()
+        );
+
         Ticket ticket = getTicketById(ticketId);
 
         ticketCheck(ticket, user);
 
         ticket.setStatus(TicketStatus.CANCELLED);
+        ticketRepository.save(ticket);
 
-        return ticketRepository.save(ticket);
+        log.info("Reservation cancelled: ticketId={}, userId={}",
+                ticketId,
+                user.getId()
+        );
+
+
+        return ticket;
     }
 
     // Auto expire
@@ -156,6 +202,11 @@ public class TicketService {
 
         for (Ticket ticket : oldTickets) {
             ticket.setStatus(TicketStatus.EXPIRED);
+
+            log.info("Reservation auto-expired: ticketId={}, userId={}",
+                    ticket.getId(),
+                    ticket.getUser().getId()
+            );
         }
 
         ticketRepository.saveAll(oldTickets);
@@ -166,6 +217,12 @@ public class TicketService {
     @Transactional // if exception - rollback
     public Ticket payForTicket(Long ticketId, PaymentRequest paymentRequest){
         User user = userService.getCurrentUser();
+
+        log.info("Processing ticket payment: ticketId={}, userId={}",
+                ticketId,
+                user.getId()
+        );
+
         Ticket ticket = getTicketById(ticketId);
 
         ticketCheck(ticket, user);
@@ -185,6 +242,12 @@ public class TicketService {
                 ticket.getReservedAt().plusMinutes(expirationTimeMinutes);
 
         if (expirationTime.isBefore(LocalDateTime.now())) {
+
+            log.warn("Reservation expired before payment: ticketId={}, userId={}",
+                    ticketId,
+                    user.getId()
+            );
+
             ticket.setStatus(TicketStatus.EXPIRED);
             ticketRepository.save(ticket);
 
@@ -217,16 +280,38 @@ public class TicketService {
         ticket.setStatus(TicketStatus.PAID);
         ticket.setPurchaseTime(LocalDateTime.now());
 
-        return ticketRepository.save(ticket);
+        ticketRepository.save(ticket);
+
+        log.info("Payment successful: ticketId={}, userId={}, amount={}",
+                ticket.getId(),
+                user.getId(),
+                ticket.getPrice()
+        );
+
+        return ticket;
     }
 
     private void ticketCheck(Ticket ticket, User user){
 
         if (!Objects.equals(ticket.getUser().getId(), user.getId())) {
+
+            log.warn("Unauthorized ticket payment attempt: ticketId={}, ownerId={}, requesterId={}",
+                    ticket.getId(),
+                    ticket.getUser().getId(),
+                    user.getId()
+            );
+
             throw new AppAccessDeniedException("You can pay for YOUR OWN ticket only");
         }
 
         if (ticket.getStatus() != TicketStatus.RESERVED) {
+
+            log.warn("Invalid ticket status for payment: ticketId={}, userId={}, status={}",
+                    ticket.getId(),
+                    user.getId(),
+                    ticket.getStatus()
+            );
+
             throw new InvalidTicketStateException("Only RESERVED tickets can be paid");
         }
     }
