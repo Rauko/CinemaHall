@@ -112,7 +112,12 @@ public class UserService {
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
 
-        log.info("User {} has been deleted.", id);
+        User admin = getCurrentUser();
+
+        log.info("ADMIN ACTION by {}({}): User {} has been deleted.",
+                admin.getName(), admin.getId(),
+                id
+        );
     }
 
     public User register(RegisterRequest request) {
@@ -141,8 +146,11 @@ public class UserService {
     public void blockUser(Long id, String reason) {
 
         User user = getUserById(id);
+        User admin = getCurrentUser();
 
-        log.info("Blocking user: userId={}, email={}, reason={}",
+        log.info("ADMIN ACTION by {}({}): Blocking user: userId={}, email={}, reason={}",
+                admin.getName(),
+                admin.getId(),
                 user.getId(),
                 user.getEmail(),
                 reason
@@ -160,13 +168,19 @@ public class UserService {
 
             blockedEmailRepository.save(blockedEmail);
 
-            log.info("Blocked email added: userId={}, email={}",
+            log.info("ADMIN ACTION by {}({}): Blocked email added: userId={}, email={}",
+                    admin.getName(),
+                    admin.getId(),
                     user.getId(),
                     normalizedEmail
             );
         }
         userRepository.save(user);
 
-        log.info("User banned successfully: userId={}", user.getId());
+        log.info("ADMIN ACTION by {}({}): User banned successfully: userId={}",
+                admin.getName(),
+                admin.getId(),
+                user.getId()
+        );
     }
 }
