@@ -12,6 +12,8 @@ import com.cinema.repository.BlockedEmailRepository;
 import com.cinema.repository.UserRepository;
 import com.cinema.util.EmailNormalizer;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,11 +21,12 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
+
+    private static final Logger log = LoggerFactory.getLogger(UserService.class);
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -48,6 +51,7 @@ public class UserService {
                 SecurityContextHolder.getContext().getAuthentication();
 
         if (auth == null) {
+            log.warn("Unauthenticated access attempt");
             throw new UnauthenticatedException();
         }
 
@@ -57,24 +61,58 @@ public class UserService {
 
     public User updateName(String newName) {
         User user = getCurrentUser();
+
+        log.info("Updating user name: userId={}, oldName={}, newName={}",
+                user.getId(),
+                user.getName(),
+                newName
+        );
+
         user.setName(newName);
+
+        log.info("User name updated: userId={}", user.getId());
+
         return userRepository.save(user);
     }
 
     public User updateEmail(String newEmail) {
         User user = getCurrentUser();
-        user.setEmail(newEmail);
-        return userRepository.save(user);
+
+        String normalizedEmail = EmailNormalizer.normalize(newEmail);
+
+        log.info("Updating user email: userId={}, oldEmail={}, newEmail={}",
+                user.getId(),
+                user.getEmail(),
+                normalizedEmail
+        );
+
+        user.setEmail(normalizedEmail);
+
+        userRepository.save(user);
+
+        log.info("User email updated: userId={}", user.getId());
+
+        return user;
     }
 
     public User updatePassword(String newPassword) {
         User user = getCurrentUser();
+
+        log.info("Updating user password: userId={}", user.getId());
+
         user.setPasswordHash(passwordEncoder.encode(newPassword));
-        return userRepository.save(user);
+
+        userRepository.save(user);
+
+        log.info("User password updated: userId={}", user.getId());
+
+        return user;
     }
 
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
+
+        log.info("User {} has been deleted.", id);
     }
 
     public User register(RegisterRequest request) {
@@ -92,12 +130,23 @@ public class UserService {
         user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
         user.setStatus(UserStatus.ACTIVE);
 
+        log.info("User {}({}) has been registered.",
+                user.getId(),
+                user.getEmail()
+        );
+
         return userRepository.save(user);
     }
 
     public void blockUser(Long id, String reason) {
 
         User user = getUserById(id);
+
+        log.info("Blocking user: userId={}, email={}, reason={}",
+                user.getId(),
+                user.getEmail(),
+                reason
+        );
 
         user.setStatus(UserStatus.BANNED);
 
@@ -110,7 +159,14 @@ public class UserService {
             blockedEmail.setBlockedAt(LocalDateTime.now());
 
             blockedEmailRepository.save(blockedEmail);
+
+            log.info("Blocked email added: userId={}, email={}",
+                    user.getId(),
+                    normalizedEmail
+            );
         }
         userRepository.save(user);
+
+        log.info("User banned successfully: userId={}", user.getId());
     }
 }
