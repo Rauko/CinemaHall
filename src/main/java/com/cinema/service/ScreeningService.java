@@ -28,6 +28,13 @@ public class ScreeningService {
         return screeningRepository.findByMovie(movie);
     }
 
+    public Screening getScreeningById(Long screeningId) {
+        return screeningRepository.findById(screeningId)
+                .orElseThrow(() -> new ScreeningNotFoundException(screeningId));
+    }
+
+
+
     public Screening addScreening(Long movieId,
                                   String hallName,
                                   LocalDateTime startTime,
