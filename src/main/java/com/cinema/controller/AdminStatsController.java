@@ -45,11 +45,10 @@ public class AdminStatsController {
         stats.put("paidTickets", ticketRepository.countByStatus(TicketStatus.PAID));
 
         log.info("Admin stats generated: users={}, movies={}, tickets={}, paidTickets={}",
-                stats.get("users"),
-                stats.get("movies"),
-                stats.get("tickets"),
-                stats.get("paidTickets")
-        );
+                 stats.get("users"),
+                 stats.get("movies"),
+                 stats.get("tickets"),
+                 stats.get("paidTickets"));
 
         return stats;
     }
@@ -66,10 +65,9 @@ public class AdminStatsController {
         byte[] file = purchaseHistoryExportService.exportForAdmin(user, format);
 
         log.info("Admin export completed: userId={}, format={}, fileSizeBytes={}",
-                userId,
-                format,
-                file.length
-        );
+                 userId,
+                 format,
+                 file.length);
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION,
@@ -84,9 +82,8 @@ public class AdminStatsController {
         double revenue = purchaseHistoryService.getRevenueForDay(LocalDate.parse(date));
 
         log.info("Admin daily revenue calculated: date={}, revenue={}",
-                date,
-                revenue
-        );
+                 date,
+                 revenue);
 
         return revenue;
     }
@@ -95,17 +92,15 @@ public class AdminStatsController {
     public double revenueForMonth(@RequestParam int year,
                                   @RequestParam int month){
         log.info("Admin monthly revenue requested: year={}, month={}",
-                year,
-                month
-        );
+                 year,
+                 month);
 
         double revenue = purchaseHistoryService.getRevenueForMonth(year, month);
 
         log.info("Admin monthly revenue calculated: year={}, month={}, revenue={}",
-                year,
-                month,
-                revenue
-        );
+                 year,
+                 month,
+                 revenue);
 
         return revenue;
     }

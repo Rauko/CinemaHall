@@ -30,14 +30,12 @@ public class AdminScreeningController {
 
         User admin = userService.getCurrentUser();
 
-        log.info(
-                "ADMIN ACTION by {}({}): Creating screening for movieId={}, hall={}, startTime={}",
-                admin.getName(),
-                admin.getId(),
-                request.getMovieId(),
-                request.getHallName(),
-                request.getStartTime()
-        );
+        log.info("ADMIN ACTION by {}({}): Creating screening for movieId={}, hall={}, startTime={}",
+                 admin.getName(),
+                 admin.getId(),
+                 request.getMovieId(),
+                 request.getHallName(),
+                 request.getStartTime());
 
         Screening screening = screeningService.addScreening(
                 request.getMovieId(),
@@ -47,14 +45,12 @@ public class AdminScreeningController {
                 request.getPrice()
         );
 
-        log.info(
-                "ADMIN ACTION by {}({}): Screening created. screeningId={}, movieId={}, hall={}",
-                admin.getName(),
-                admin.getId(),
-                screening.getId(),
-                screening.getMovie().getId(),
-                screening.getHallName()
-        );
+        log.info("ADMIN ACTION by {}({}): Screening created. screeningId={}, movieId={}, hall={}",
+                 admin.getName(),
+                 admin.getId(),
+                 screening.getId(),
+                 screening.getMovie().getId(),
+                 screening.getHallName());
 
         return ResponseEntity.ok(
                 ScreeningMapper.toDto(screening)
@@ -68,32 +64,26 @@ public class AdminScreeningController {
 
         Screening screening = screeningService.getScreeningById(id);
 
-        log.info(
-                "ADMIN ACTION by {}({}): Deleting screeningId={}, movieId={}, hall={}",
-                admin.getName(),
-                admin.getId(),
-                screening.getId(),
-                screening.getMovie().getId(),
-                screening.getHallName()
-        );
+        log.info("ADMIN ACTION by {}({}): Deleting screeningId={}, movieId={}, hall={}",
+                 admin.getName(),
+                 admin.getId(),
+                 screening.getId(),
+                 screening.getMovie().getId(),
+                 screening.getHallName());
 
-        log.info(
-                "ADMIN ACTION by {}({}): Deleting screeningId={}, movieId={}, hall={}",
-                admin.getName(),
-                admin.getId(),
-                screening.getId(),
-                screening.getMovie().getId(),
-                screening.getHallName()
-        );
+        log.info("ADMIN ACTION by {}({}): Deleting screeningId={}, movieId={}, hall={}",
+                 admin.getName(),
+                 admin.getId(),
+                 screening.getId(),
+                 screening.getMovie().getId(),
+                 screening.getHallName());
 
         screeningService.deleteScreening(id);
 
-        log.info(
-                "ADMIN ACTION by {}({}): Screening deleted. screeningId={}",
-                admin.getName(),
-                admin.getId(),
-                id
-        );
+        log.info("ADMIN ACTION by {}({}): Screening deleted. screeningId={}",
+                 admin.getName(),
+                 admin.getId(),
+                 id);
 
         return ResponseEntity.noContent().build();
     }

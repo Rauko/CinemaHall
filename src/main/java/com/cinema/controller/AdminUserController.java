@@ -94,10 +94,9 @@ public class AdminUserController {
         User admin = userService.getCurrentUser();
 
         log.info("ADMIN ACTION by {}({}): Viewing all tickets for targetUserId={}",
-                admin.getName(),
-                admin.getId(),
-                id
-        );
+                 admin.getName(),
+                 admin.getId(),
+                 id);
 
         List<TicketDto> tickets =
                 ticketService.getTicketsByUserId(id)
@@ -106,11 +105,10 @@ public class AdminUserController {
                         .toList();
 
         log.info("ADMIN ACTION by {}({}): Tickets loaded for targetUserId={}, count={}",
-                admin.getName(),
-                admin.getId(),
-                id,
-                tickets.size()
-        );
+                 admin.getName(),
+                 admin.getId(),
+                 id,
+                 tickets.size());
 
         return ResponseEntity.ok(tickets);
     }
@@ -121,10 +119,9 @@ public class AdminUserController {
         User admin = userService.getCurrentUser();
 
         log.info("ADMIN ACTION by {}({}): Viewing PAID tickets for targetUserId={}",
-                admin.getName(),
-                admin.getId(),
-                id
-        );
+                 admin.getName(),
+                 admin.getId(),
+                 id);
 
         List<TicketDto> tickets =
                 ticketService.getTicketsByUserIdAndStatus(
@@ -136,11 +133,10 @@ public class AdminUserController {
                         .toList();
 
         log.info("ADMIN ACTION by {}({}): PAID tickets loaded for targetUserId={}, count={}",
-                admin.getName(),
-                admin.getId(),
-                id,
-                tickets.size()
-        );
+                 admin.getName(),
+                 admin.getId(),
+                 id,
+                 tickets.size());
 
         return ResponseEntity.ok(tickets);
     }
@@ -151,10 +147,9 @@ public class AdminUserController {
         User admin = userService.getCurrentUser();
 
         log.info("ADMIN ACTION by {}({}): Viewing RESERVED tickets for targetUserId={}",
-                admin.getName(),
-                admin.getId(),
-                id
-        );
+                 admin.getName(),
+                 admin.getId(),
+                 id);
 
         List<TicketDto> tickets =
                 ticketService.getTicketsByUserIdAndStatus(
@@ -166,11 +161,10 @@ public class AdminUserController {
                         .toList();
 
         log.info("ADMIN ACTION by {}({}): RESERVED tickets loaded for targetUserId={}, count={}",
-                admin.getName(),
-                admin.getId(),
-                id,
-                tickets.size()
-        );
+                 admin.getName(),
+                 admin.getId(),
+                 id,
+                 tickets.size());
 
         return ResponseEntity.ok(tickets);
     }
@@ -181,10 +175,9 @@ public class AdminUserController {
         User admin = userService.getCurrentUser();
 
         log.info("ADMIN ACTION by {}({}): Viewing EXPIRED tickets for targetUserId={}",
-                admin.getName(),
-                admin.getId(),
-                id
-        );
+                 admin.getName(),
+                 admin.getId(),
+                 id);
 
         List<TicketDto> tickets =
                 ticketService.getTicketsByUserIdAndStatus(
@@ -196,11 +189,10 @@ public class AdminUserController {
                         .toList();
 
         log.info("ADMIN ACTION by {}({}): EXPIRED tickets loaded for targetUserId={}, count={}",
-                admin.getName(),
-                admin.getId(),
-                id,
-                tickets.size()
-        );
+                 admin.getName(),
+                 admin.getId(),
+                 id,
+                 tickets.size());
 
         return ResponseEntity.ok(tickets);
     }
@@ -211,10 +203,9 @@ public class AdminUserController {
         User admin = userService.getCurrentUser();
 
         log.info("ADMIN ACTION by {}({}): Viewing CANCELLED tickets for targetUserId={}",
-                admin.getName(),
-                admin.getId(),
-                id
-        );
+                 admin.getName(),
+                 admin.getId(),
+                 id);
 
         List<TicketDto> tickets =
                 ticketService.getTicketsByUserIdAndStatus(
@@ -226,11 +217,10 @@ public class AdminUserController {
                         .toList();
 
         log.info("ADMIN ACTION by {}({}): CANCELLED tickets loaded for targetUserId={}, count={}",
-                admin.getName(),
-                admin.getId(),
-                id,
-                tickets.size()
-        );
+                 admin.getName(),
+                 admin.getId(),
+                 id,
+                 tickets.size());
 
         return ResponseEntity.ok(tickets);
     }

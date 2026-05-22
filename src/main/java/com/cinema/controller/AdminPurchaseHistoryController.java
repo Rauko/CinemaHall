@@ -39,15 +39,13 @@ public class AdminPurchaseHistoryController {
         User user = userService.getUserById(userId);
         User admin = userService.getCurrentUser();
 
-        log.info(
-                "ADMIN ACTION by {}({}): Export history requested for userId={}, format={}, start={}, end={}",
-                admin.getName(),
-                admin.getId(),
-                userId,
-                format,
-                startDate,
-                endDate
-        );
+        log.info("ADMIN ACTION by {}({}): Export history requested for userId={}, format={}, start={}, end={}",
+                 admin.getName(),
+                 admin.getId(),
+                 userId,
+                 format,
+                 startDate,
+                 endDate);
 
         String username = user.getId() + "(" +user.getName() + ")";
 
@@ -59,14 +57,12 @@ public class AdminPurchaseHistoryController {
                         format
                 );
 
-        log.info(
-                "ADMIN ACTION by {}({}): Export completed for userId={}, format={}, fileSizeBytes={}",
-                admin.getName(),
-                admin.getId(),
-                userId,
-                format,
-                file.length
-        );
+        log.info("ADMIN ACTION by {}({}): Export completed for userId={}, format={}, fileSizeBytes={}",
+                 admin.getName(),
+                 admin.getId(),
+                 userId,
+                 format,
+                 file.length);
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION,

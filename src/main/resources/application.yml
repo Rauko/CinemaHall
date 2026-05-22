@@ -28,7 +28,9 @@ ticket:
 logging:
   file:
     name: logs/app.log
-
-level:
-  root: INFO
-  com.cinema: DEBUG
+  level:
+    root: INFO
+    com.cinema: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n"
