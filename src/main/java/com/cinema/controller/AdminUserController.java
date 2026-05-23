@@ -32,7 +32,7 @@ public class AdminUserController {
 
         User admin = userService.getCurrentUser();
 
-        log.info("ADMIN ACTION by {}({}): Viewing all users",
+        log.info("ADMIN ACTION by {}({}): requestType=GET_ALL_USERS",
                 admin.getName(),
                 admin.getId()
         );
@@ -42,7 +42,7 @@ public class AdminUserController {
                 .map(AdminUserMapper::toDto)
                 .toList();
 
-        log.info("ADMIN ACTION by {}({}): Retrieved users count={}",
+        log.info("ADMIN ACTION by {}({}): requestType=GET_ALL_USERS, count={}",
                 admin.getName(),
                 admin.getId(),
                 users.size()
@@ -56,7 +56,7 @@ public class AdminUserController {
 
         User admin = userService.getCurrentUser();
 
-        log.info("ADMIN ACTION by {}({}): Viewing user targetUserId={}",
+        log.info("ADMIN ACTION by {}({}): requestType=GET_USER, targetUserId={}",
                 admin.getName(),
                 admin.getId(),
                 id
@@ -68,7 +68,7 @@ public class AdminUserController {
                     userService.getUserById(id)
             );
 
-            log.info("ADMIN ACTION by {}({}): User loaded targetUserId={}",
+            log.info("ADMIN ACTION by {}({}): requestType=GET_USER, targetUserId={}",
                     admin.getName(),
                     admin.getId(),
                     id
@@ -93,7 +93,7 @@ public class AdminUserController {
 
         User admin = userService.getCurrentUser();
 
-        log.info("ADMIN ACTION by {}({}): Viewing all tickets for targetUserId={}",
+        log.info("ADMIN ACTION by {}({}): requestType=GET_USER_TICKETS, targetUserId={}",
                  admin.getName(),
                  admin.getId(),
                  id);
@@ -104,7 +104,7 @@ public class AdminUserController {
                         .map(TicketMapper::toDto)
                         .toList();
 
-        log.info("ADMIN ACTION by {}({}): Tickets loaded for targetUserId={}, count={}",
+        log.info("ADMIN ACTION by {}({}): requestType=GET_USER_TICKETS, targetUserId={}, count={}",
                  admin.getName(),
                  admin.getId(),
                  id,
@@ -118,7 +118,7 @@ public class AdminUserController {
 
         User admin = userService.getCurrentUser();
 
-        log.info("ADMIN ACTION by {}({}): Viewing PAID tickets for targetUserId={}",
+        log.info("ADMIN ACTION by {}({}): requestType=GET_PAID_TICKETS, targetUserId={}",
                  admin.getName(),
                  admin.getId(),
                  id);
@@ -132,7 +132,7 @@ public class AdminUserController {
                         .map(TicketMapper::toDto)
                         .toList();
 
-        log.info("ADMIN ACTION by {}({}): PAID tickets loaded for targetUserId={}, count={}",
+        log.info("ADMIN ACTION by {}({}): requestType=GET_PAID_TICKETS, targetUserId={}, count={}",
                  admin.getName(),
                  admin.getId(),
                  id,
@@ -146,7 +146,7 @@ public class AdminUserController {
 
         User admin = userService.getCurrentUser();
 
-        log.info("ADMIN ACTION by {}({}): Viewing RESERVED tickets for targetUserId={}",
+        log.info("ADMIN ACTION by {}({}): requestType=GET_RESERVED_TICKETS, targetUserId={}",
                  admin.getName(),
                  admin.getId(),
                  id);
@@ -160,7 +160,7 @@ public class AdminUserController {
                         .map(TicketMapper::toDto)
                         .toList();
 
-        log.info("ADMIN ACTION by {}({}): RESERVED tickets loaded for targetUserId={}, count={}",
+        log.info("ADMIN ACTION by {}({}): requestType=GET_RESERVED_TICKETS, targetUserId={}, count={}",
                  admin.getName(),
                  admin.getId(),
                  id,
@@ -174,7 +174,7 @@ public class AdminUserController {
 
         User admin = userService.getCurrentUser();
 
-        log.info("ADMIN ACTION by {}({}): Viewing EXPIRED tickets for targetUserId={}",
+        log.info("ADMIN ACTION by {}({}): requestType=GET_EXPIRED_TICKETS, targetUserId={}",
                  admin.getName(),
                  admin.getId(),
                  id);
@@ -188,7 +188,7 @@ public class AdminUserController {
                         .map(TicketMapper::toDto)
                         .toList();
 
-        log.info("ADMIN ACTION by {}({}): EXPIRED tickets loaded for targetUserId={}, count={}",
+        log.info("ADMIN ACTION by {}({}): requestType=GET_EXPIRED_TICKETS, targetUserId={}, count={}",
                  admin.getName(),
                  admin.getId(),
                  id,
@@ -202,7 +202,7 @@ public class AdminUserController {
 
         User admin = userService.getCurrentUser();
 
-        log.info("ADMIN ACTION by {}({}): Viewing CANCELLED tickets for targetUserId={}",
+        log.info("ADMIN ACTION by {}({}): requestType=GET_CANCELLED_TICKETS, targetUserId={}",
                  admin.getName(),
                  admin.getId(),
                  id);
@@ -216,7 +216,7 @@ public class AdminUserController {
                         .map(TicketMapper::toDto)
                         .toList();
 
-        log.info("ADMIN ACTION by {}({}): CANCELLED tickets loaded for targetUserId={}, count={}",
+        log.info("ADMIN ACTION by {}({}): requestType=GET_CANCELLED_TICKETS, targetUserId={}, count={}",
                  admin.getName(),
                  admin.getId(),
                  id,
